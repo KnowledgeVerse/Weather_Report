@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Content</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/animations.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background: transparent !important;
+        margin: 0;
+        padding: 20px;
+        overflow-x: hidden;
+      }
+      .dashboard-content {
+        margin-top: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-content">
+      <!-- Hero Section -->
+      <section class="hero-section">
+        <!-- Floating Weather Icons -->
+        <div class="floating-icons">
+          <div class="float-icon float-sun">
+            <img src="assets/weather-icons/sun.png" alt="sun" />
+          </div>
+          <div class="float-icon float-cloud">
+            <img src="assets/weather-icons/cloud.png" alt="cloud" />
+          </div>
+          <div class="float-icon float-rain">
+            <img src="assets/weather-icons/rain.png" alt="rain" />
+          </div>
+          <div class="float-icon float-storm">
+            <img src="assets/weather-icons/storm.png" alt="storm" />
+          </div>
+          <div class="float-icon float-snow">
+            <img src="assets/weather-icons/snow.png" alt="snow" />
+          </div>
+          <div class="float-icon float-wind">
+            <img src="assets/weather-icons/wind.png" alt="wind" />
+          </div>
+        </div>
+
+        <!-- Glassmorphism Card -->
+        <div class="glass-card main-card">
+          <div class="card-glow"></div>
+          <div class="card-content">
+            <div class="weather-logo">
+              <img
+                src="assets/weather-icons/sun.png"
+                alt="Weather"
+                class="logo-img"
+              />
+            </div>
+            <h1 class="card-title" data-key="weatherBulletin">
+              Weather Bulletin System
+            </h1>
+            <p class="card-subtitle" data-key="stateForecasting">
+              State Weather Forecasting Centre
+            </p>
+            <div class="card-decoration">
+              <span class="decoration-line"></span
+              ><span class="decoration-dot"></span
+              ><span class="decoration-line"></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quick Actions Grid -->
+      <section class="quick-actions">
+        <h2 class="section-title" data-key="quickActions">Quick Actions</h2>
+        <div class="actions-grid">
+          <a
+            href="Weekly/"
+            class="action-card"
+            target="main-frame"
+            onclick="
+              if (window.parent && window.parent.updateNav)
+                window.parent.updateNav(
+                  window.parent.document.getElementById('nav-weekly'),
+                  'Weekly Report',
+                );
+            "
+          >
+            <div class="action-icon">
+              <img src="assets/weather-icons/rain.png" alt="Weekly" />
+            </div>
+            <h3 data-key="weeklyReport">Weekly Report</h3>
+            <p data-key="weeklyDesc">Generate weekly weather bulletins</p>
+          </a>
+
+          <a
+            href="Monthly/"
+            class="action-card"
+            target="main-frame"
+            onclick="
+              if (window.parent && window.parent.updateNav)
+                window.parent.updateNav(
+                  window.parent.document.getElementById('nav-monthly'),
+                  'Monthly Report',
+                );
+            "
+          >
+            <div class="action-icon">
+              <img src="assets/weather-icons/cloud.png" alt="Monthly" />
+            </div>
+            <h3 data-key="monthlyReport">Monthly Report</h3>
+            <p data-key="monthlyDesc">Generate monthly weather reports</p>
+          </a>
+
+          <a
+            href="Extended/"
+            class="action-card"
+            target="main-frame"
+            onclick="
+              if (window.parent && window.parent.updateNav)
+                window.parent.updateNav(
+                  window.parent.document.getElementById('nav-extended'),
+                  'Extended Report',
+                );
+            "
+          >
+            <div class="action-icon">
+              <img src="assets/weather-icons/storm.png" alt="Extended" />
+            </div>
+            <h3 data-key="extendedReport">Extended Report</h3>
+            <p data-key="extendedDesc">Long range forecast generator</p>
+          </a>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>

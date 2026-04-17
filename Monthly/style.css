@@ -1,0 +1,545 @@
+/* ============================================
+   MONTHLY WEATHER BULLETIN GENERATOR STYLES
+   IMD (India Meteorological Department) Format
+   ============================================ */
+
+/* CSS Variables */
+:root {
+  --primary-color: #1e3a5f;
+  --secondary-color: #2c5282;
+  --accent-color: #3182ce;
+  --success-color: #38a169;
+  --warning-color: #d69e2e;
+  --danger-color: #e53e3e;
+  --bg-color: #f7fafc;
+  --card-bg: rgba(255, 255, 255, 0.95);
+  --text-primary: #1a202c;
+  --text-secondary: #4a5568;
+  --border-color: #e2e8f0;
+  --shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+body.dark-mode {
+  --bg-color: #1a202c;
+  --card-bg: rgba(45, 55, 72, 0.95);
+  --text-primary: #f7fafc;
+  --text-secondary: #e2e8f0;
+  --border-color: #4a5568;
+}
+
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* ============================================
+   HEADER STYLES
+   ============================================ */
+
+.main-header {
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+  margin-bottom: 30px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.main-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #f6ad55, #ed8936, #dd6b20);
+}
+
+.main-header h1 {
+  color: var(--primary-color);
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+body.dark-mode .main-header h1 {
+  color: #fff;
+}
+
+.main-header p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+/* ============================================
+   SECTION STYLES
+   ============================================ */
+
+section {
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  margin-bottom: 25px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+section h2 {
+  color: var(--primary-color);
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+body.dark-mode section h2 {
+  color: #90cdf4;
+}
+
+/* Form Styles for Inputs */
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: var(--primary-color);
+}
+
+body.dark-mode .form-group label {
+  color: #e2e8f0;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="number"],
+select,
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid var(--border-color);
+  border-radius: 6px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  transition: border-color 0.3s;
+  background: transparent;
+  color: var(--text-primary);
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+  background: #1a202c;
+  color: #fff;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.bilingual-input {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.bilingual-input .form-group {
+  margin-bottom: 0;
+}
+
+/* Collapsible Panel Styles */
+.collapsible::after {
+  content: "▼";
+  font-size: 14px;
+  margin-left: auto;
+  transition: transform 0.3s;
+  float: right;
+  margin-top: 5px;
+}
+.collapsible.active::after {
+  transform: rotate(180deg);
+}
+.panel-content {
+  display: none;
+  animation: fadeIn 0.3s ease;
+  margin-top: 15px;
+}
+.panel-content.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.image-preview {
+  max-width: 200px;
+  max-height: 150px;
+  margin-top: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+}
+
+/* Button Styles */
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+  filter: brightness(1.1);
+}
+.btn-primary {
+  background: var(--accent-color);
+  color: white;
+}
+.btn-secondary {
+  background: #718096;
+  color: white;
+}
+.btn-success {
+  background: var(--success-color);
+  color: white;
+}
+.btn-info {
+  background: #4299e1;
+  color: white;
+}
+.btn-warning {
+  background: var(--warning-color);
+  color: #000;
+}
+.btn-large {
+  padding: 15px 30px;
+  font-size: 16px;
+}
+
+/* Table Styles */
+.table-container {
+  overflow-x: auto;
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  overflow: hidden;
+}
+body.dark-mode .data-table {
+  background: rgba(0, 0, 0, 0.2);
+}
+.data-table th {
+  background: var(--primary-color);
+  color: white;
+  padding: 12px 8px;
+  text-align: center;
+  font-weight: 600;
+  border: 1px solid #2c5282;
+}
+.data-table td {
+  padding: 10px 8px;
+  border: 1px solid var(--border-color);
+  text-align: center;
+}
+.data-table tbody tr:nth-child(even) {
+  background: rgba(0, 0, 0, 0.02);
+}
+body.dark-mode .data-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+.data-table tbody tr:hover {
+  background: rgba(66, 153, 225, 0.1);
+}
+.data-table input {
+  width: 100%;
+  border: none;
+  text-align: center;
+  font-family: inherit;
+  background: transparent;
+  padding: 4px;
+  border-radius: 4px;
+}
+.data-table input:focus {
+  outline: 2px solid var(--accent-color);
+  background: var(--card-bg);
+}
+
+/* Preview Section */
+.preview-controls {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.bulletin-preview {
+  background: #edf2f7;
+  border: 1px solid #ddd;
+  padding: 30px 15px;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+body.dark-mode .bulletin-preview {
+  background: #1a202c;
+  border-color: #4a5568;
+}
+
+/* Document Print Styles (IMD Standard) */
+.bulletin-page {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  padding: 20mm;
+  background: white;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+  color: #000;
+}
+.imd-document {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 12pt;
+  line-height: 1.3;
+  color: #000;
+}
+.header-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 15px;
+}
+.header-table td {
+  vertical-align: top;
+  padding: 5px;
+  border: 1px solid transparent;
+}
+.header-left {
+  width: 35%;
+  text-align: left;
+  font-size: 11pt;
+}
+.header-center {
+  width: 30%;
+  text-align: center;
+  vertical-align: middle;
+}
+.header-right {
+  width: 35%;
+  text-align: left;
+  font-size: 11pt;
+}
+.logo-placeholder {
+  width: 80px;
+  height: 80px;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #666;
+}
+.date-line {
+  text-align: center;
+  margin: 15px 0;
+  font-weight: bold;
+  text-decoration: underline;
+}
+.main-title {
+  text-align: center;
+  font-weight: bold;
+  font-size: 13pt;
+  margin: 15px 0;
+  text-decoration: underline;
+}
+.subtitle {
+  text-align: center;
+  font-size: 12pt;
+  margin: 10px 0;
+}
+.section-title {
+  font-weight: bold;
+  margin: 15px 0 10px 0;
+}
+.rainfall-summary {
+  border: 1px solid #000;
+  padding: 10px;
+  margin: 10px 0;
+}
+.rainfall-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10pt;
+}
+.rainfall-table th,
+.rainfall-table td {
+  border: 1px solid #000;
+  padding: 4px 6px;
+  text-align: center;
+}
+.rainfall-table th {
+  background: #f5f5f5;
+  font-weight: bold;
+  color: black;
+}
+.rainfall-table td:first-child {
+  text-align: left;
+}
+.map-section {
+  margin: 15px 0;
+  border: 1px solid #000;
+  width: 100%;
+}
+.map-section td {
+  border: 1px solid #000;
+  padding: 10px;
+  text-align: center;
+  vertical-align: top;
+}
+.forecast-section {
+  margin: 15px 0;
+}
+.forecast-title {
+  text-decoration: underline;
+  font-weight: bold;
+  margin: 10px 0;
+}
+.bullet-point {
+  margin-left: 20px;
+  margin-bottom: 5px;
+}
+.advisory-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+}
+.advisory-table th,
+.advisory-table td {
+  border: 1px solid #000;
+  padding: 8px;
+  text-align: left;
+  vertical-align: top;
+}
+.advisory-table th {
+  background: #f5f5f5;
+  font-weight: bold;
+  color: black;
+}
+.signature-section {
+  margin-top: 30px;
+  font-weight: bold;
+}
+.next-bulletin {
+  margin-top: 20px;
+  font-weight: bold;
+}
+.footer-text {
+  margin-top: 20px;
+  text-align: center;
+}
+
+@media print {
+  body {
+    background: white;
+  }
+  .container {
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+  .main-header,
+  section:not(.preview-section),
+  .preview-controls,
+  .controls {
+    display: none !important;
+  }
+  .preview-section {
+    box-shadow: none;
+    padding: 0;
+    border: none;
+    background: transparent;
+  }
+  .bulletin-preview {
+    border: none;
+    background: white;
+    padding: 0;
+  }
+  .bulletin-page {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .bilingual-input {
+    grid-template-columns: 1fr;
+  }
+  .header-table td {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .bulletin-page {
+    width: 100%;
+    padding: 10mm;
+  }
+}

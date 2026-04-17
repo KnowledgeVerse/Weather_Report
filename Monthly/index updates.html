@@ -1,0 +1,4251 @@
+<!doctype html>
+<html lang="hi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>बिहार मौसम विज्ञान केंद्र - मासिक विश्लेषण प्रणाली</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --primary: #1e3a8a;
+        --secondary: #3b82f6;
+        --accent: #f59e0b;
+        --glass: rgba(255, 255, 255, 0.1);
+        --glass-border: rgba(255, 255, 255, 0.2);
+        --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        --bg-gradient-1: #667eea;
+        --bg-gradient-2: #764ba2;
+        --text-main: #1f2937;
+        --text-muted: #64748b;
+        --card-bg: #ffffff;
+        --stat-bg-1: #f8fafc;
+        --stat-bg-2: #e2e8f0;
+        --border-color: #e2e8f0;
+        --input-bg: #ffffff;
+      }
+      body.dark-mode {
+        --primary: #60a5fa;
+        --bg-gradient-1: #0f172a;
+        --bg-gradient-2: #1e293b;
+        --text-main: #f8fafc;
+        --text-muted: #cbd5e1;
+        --card-bg: #1e293b;
+        --stat-bg-1: #334155;
+        --stat-bg-2: #0f172a;
+        --border-color: #334155;
+        --input-bg: #0f172a;
+        --glass: rgba(0, 0, 0, 0.4);
+        --glass-border: rgba(255, 255, 255, 0.1);
+      }
+      body {
+        font-family: "Noto Sans Devanagari", sans-serif;
+        background: linear-gradient(
+          135deg,
+          var(--bg-gradient-1) 0%,
+          var(--bg-gradient-2) 100%
+        );
+        background-attachment: fixed;
+        min-height: 100vh;
+        color: var(--text-main);
+        transition:
+          color 0.3s,
+          background 0.3s;
+      }
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .header {
+        background: var(--glass);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(
+          120deg,
+          var(--glass),
+          rgba(255, 255, 255, 0.2),
+          var(--glass)
+        );
+        background-size: 200% 200%;
+        animation: sleekGradient 5s ease infinite;
+      }
+      @keyframes sleekGradient {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+      .header-content {
+        display: grid;
+        grid-template-columns: 100px 1fr 100px;
+        gap: 20px;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+      }
+      .header-text {
+        text-align: center;
+        color: white;
+      }
+      .header-text h1 {
+        font-size: 1.8rem;
+        margin-bottom: 5px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+      .header-actions {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        display: flex;
+        gap: 10px;
+        z-index: 10;
+      }
+      .header-btn {
+        background: var(--glass);
+        border: 1px solid var(--glass-border);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          transform 0.3s,
+          background 0.3s;
+        text-decoration: none;
+        font-weight: bold;
+        font-family: inherit;
+        font-size: 1rem;
+      }
+      .header-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.1);
+      }
+      .main-grid {
+        display: grid;
+        grid-template-columns: 320px minmax(0, 1fr);
+        gap: 25px;
+      }
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .glass-card {
+        background: var(--glass);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: var(--shadow);
+      }
+      .card-title {
+        color: white;
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .card-title i {
+        color: var(--accent);
+      }
+      .upload-area {
+        border: 2px dashed rgba(255, 255, 255, 0.3);
+        border-radius: 15px;
+        padding: 40px 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .upload-area:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: var(--accent);
+      }
+      .upload-area.dragover {
+        background: rgba(245, 158, 11, 0.2);
+        border-color: var(--accent);
+      }
+      .upload-icon {
+        font-size: 3rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 15px;
+      }
+      .upload-text {
+        color: white;
+        font-size: 1rem;
+      }
+      .upload-subtext {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.85rem;
+        margin-top: 5px;
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+      .form-label {
+        display: block;
+        color: white;
+        margin-bottom: 8px;
+        font-weight: 500;
+      }
+      .form-select,
+      .form-input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        background: var(--input-bg);
+        color: var(--text-main);
+        font-size: 1rem;
+        font-family: inherit;
+        transition: all 0.3s;
+      }
+      .form-select:focus,
+      .form-input:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+      .btn {
+        width: 100%;
+        padding: 14px 20px;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        font-family: inherit;
+      }
+      .btn-primary {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+      }
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: 1px solid var(--glass-border);
+      }
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+      .btn-success {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        margin-top: 10px;
+      }
+      .main-content {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+      }
+      .content-card {
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: var(--shadow);
+        transition: background 0.3s;
+      }
+      .section-title {
+        font-size: 1.5rem;
+        color: var(--primary);
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 3px solid var(--accent);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .analysis-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+      .stat-card {
+        background: linear-gradient(
+          135deg,
+          var(--stat-bg-1) 0%,
+          var(--stat-bg-2) 100%
+        );
+        border-radius: 15px;
+        padding: 15px 20px;
+        border-left: 5px solid var(--secondary);
+        transition: transform 0.3s;
+      }
+      .stat-card:hover {
+        transform: translateY(-5px);
+      }
+      .stat-label {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin-bottom: 5px;
+      }
+      .stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+      .stat-station {
+        font-size: 0.9rem;
+        color: var(--accent);
+        font-weight: 600;
+      }
+      .editable-section {
+        margin-bottom: 25px;
+      }
+      .editable-title {
+        font-size: 1.2rem;
+        color: var(--primary);
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+      .editable-content {
+        width: 100%;
+        min-height: 120px;
+        padding: 15px;
+        border: 2px solid var(--border-color);
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 1rem;
+        color: var(--text-main);
+        background: var(--input-bg);
+        line-height: 1.6;
+        resize: vertical;
+        transition: border-color 0.3s;
+      }
+      .editable-content:focus {
+        outline: none;
+        border-color: var(--secondary);
+      }
+      .chart-container {
+        background: var(--stat-bg-1);
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 25px;
+        position: relative;
+      }
+      .chart-title {
+        text-align: center;
+        font-size: 1.2rem;
+        color: var(--primary);
+        margin-bottom: 20px;
+        font-weight: 600;
+      }
+      .chart-wrapper {
+        position: relative;
+        height: 400px;
+      }
+      .chart-actions {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 15px;
+        flex-wrap: wrap;
+      }
+      .btn-small {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        width: auto;
+      }
+      .outlook-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+      }
+      .outlook-card {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        border-radius: 15px;
+        padding: 20px;
+        border: 2px solid #f59e0b;
+      }
+      .outlook-card h4 {
+        color: #92400e;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .image-upload-btn {
+        background: white;
+        border: 2px dashed #f59e0b;
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: all 0.3s;
+      }
+      .image-upload-btn:hover {
+        background: #fffbeb;
+      }
+      .preview-image {
+        max-width: 100%;
+        border-radius: 10px;
+        margin-top: 10px;
+      }
+      .signature-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-top: 30px;
+        padding-top: 30px;
+        border-top: 2px solid var(--border-color);
+      }
+      .signature-box h4 {
+        color: var(--primary);
+        margin-bottom: 15px;
+      }
+      .export-section {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+        padding-top: 30px;
+        border-top: 2px solid var(--border-color);
+        flex-wrap: wrap;
+      }
+      .data-preview {
+        max-height: 300px;
+        overflow: auto;
+        margin-top: 15px;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+      }
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+      }
+      .data-table th {
+        background: var(--primary);
+        color: white;
+        padding: 12px;
+        text-align: left;
+        position: sticky;
+        top: 0;
+      }
+      .data-table td {
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--border-color);
+      }
+      .data-table tr:hover {
+        background: var(--stat-bg-2);
+      }
+      .status-message {
+        padding: 12px 20px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        display: none;
+        align-items: center;
+        gap: 10px;
+      }
+      .status-success {
+        background: #d1fae5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+      }
+      .status-error {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+      }
+      .status-info {
+        background: #dbeafe;
+        color: #1e40af;
+        border: 1px solid #bfdbfe;
+      }
+      @media (max-width: 1024px) {
+        .main-grid {
+          grid-template-columns: 1fr;
+        }
+        .header-content {
+          grid-template-columns: 1fr;
+          text-align: center;
+        }
+      }
+      @media (max-width: 768px) {
+        .analysis-grid {
+          grid-template-columns: 1fr;
+        }
+        .signature-section {
+          grid-template-columns: 1fr;
+        }
+        .export-section {
+          flex-direction: column;
+        }
+      }
+      .spinner {
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top: 3px solid white;
+        width: 20px;
+        height: 20px;
+        animation: spin 1s linear infinite;
+        display: none;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      input[type="file"] {
+        display: none;
+      }
+      .tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 25px;
+        border-bottom: 2px solid var(--border-color);
+        padding-bottom: 10px;
+      }
+      .tab-btn {
+        padding: 10px 20px;
+        border: none;
+        background: none;
+        color: var(--text-muted);
+        font-size: 1rem;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.3s;
+        font-family: inherit;
+      }
+      .tab-btn.active {
+        background: var(--secondary);
+        color: white;
+      }
+      .tab-btn:hover:not(.active) {
+        background: #f1f5f9;
+      }
+      .tab-content {
+        display: none;
+      }
+      .tab-content.active {
+        display: block;
+      }
+      .csv-sections {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+      .csv-upload-box {
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px dashed rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .csv-upload-box:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: var(--accent);
+      }
+      .csv-upload-box.uploaded {
+        border-color: #10b981;
+        background: rgba(16, 185, 129, 0.1);
+      }
+      .fto-pto-section {
+        margin-top: 30px;
+      }
+      .fto-pto-tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .fto-pto-tab {
+        padding: 10px 20px;
+        background: var(--stat-bg-1);
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s;
+      }
+      .fto-pto-tab.active {
+        background: var(--secondary);
+        color: white;
+        border-color: var(--secondary);
+      }
+      .fto-pto-content {
+        display: none;
+      }
+      .fto-pto-content.active {
+        display: block;
+      }
+      .data-table-container {
+        overflow-x: auto;
+        margin-bottom: 20px;
+      }
+      .template-selector {
+        margin-bottom: 15px;
+      }
+      .template-btn {
+        padding: 8px 12px;
+        margin: 5px;
+        background: var(--stat-bg-1);
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+      }
+      .template-btn:hover {
+        background: var(--secondary);
+        color: white;
+      }
+      .chart-upload-section {
+        margin-top: 15px;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 10px;
+        border: 2px dashed var(--border-color);
+      }
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div
+          class="header-content"
+          style="display: flex; justify-content: center; text-align: center"
+        >
+          <div class="header-text">
+            <h1
+              data-i18n="mainHeaderTitle"
+              style="
+                font-size: 2.2rem;
+                margin: 0;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+              "
+            >
+              मासिक मौसम रिपोर्ट जनरेटर
+            </h1>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-grid">
+        <div class="sidebar">
+          <div class="glass-card">
+            <h3 class="card-title"><i class="fas fa-upload"></i> डेटा अपलोड</h3>
+            <div class="tabs">
+              <button class="tab-btn active" onclick="switchTab('excel')">
+                Excel
+              </button>
+              <button class="tab-btn" onclick="switchTab('csv')">CSV</button>
+            </div>
+            <div id="excelTab" class="tab-content active">
+              <div
+                class="upload-area"
+                id="excelUploadArea"
+                onclick="document.getElementById('excelFile').click()"
+              >
+                <input
+                  type="file"
+                  id="excelFile"
+                  accept=".xlsx,.xls"
+                  onchange="handleExcelUpload(this)"
+                />
+                <div class="upload-icon"><i class="fas fa-file-excel"></i></div>
+                <div class="upload-text">Excel फाइल खींचें या क्लिक करें</div>
+                <div class="upload-subtext">
+                  .xlsx, .xls (5 शीट्स: DAILY MAX, daily min, RAINFALL, FTO,
+                  PTO)
+                </div>
+              </div>
+            </div>
+            <div id="csvTab" class="tab-content">
+              <div class="csv-sections">
+                <div
+                  class="csv-upload-box"
+                  id="maxCsvBox"
+                  onclick="document.getElementById('maxCsv').click()"
+                >
+                  <input
+                    type="file"
+                    id="maxCsv"
+                    accept=".csv"
+                    onchange="handleCsvUpload(this, 'max')"
+                  />
+                  <i
+                    class="fas fa-temperature-high"
+                    style="color: #f59e0b; font-size: 1.5rem"
+                  ></i>
+                  <div style="color: white; margin-top: 5px">
+                    Daily Max Temperature
+                  </div>
+                </div>
+                <div
+                  class="csv-upload-box"
+                  id="minCsvBox"
+                  onclick="document.getElementById('minCsv').click()"
+                >
+                  <input
+                    type="file"
+                    id="minCsv"
+                    accept=".csv"
+                    onchange="handleCsvUpload(this, 'min')"
+                  />
+                  <i
+                    class="fas fa-temperature-low"
+                    style="color: #3b82f6; font-size: 1.5rem"
+                  ></i>
+                  <div style="color: white; margin-top: 5px">
+                    Daily Min Temperature
+                  </div>
+                </div>
+                <div
+                  class="csv-upload-box"
+                  id="rainCsvBox"
+                  onclick="document.getElementById('rainCsv').click()"
+                >
+                  <input
+                    type="file"
+                    id="rainCsv"
+                    accept=".csv"
+                    onchange="handleCsvUpload(this, 'rain')"
+                  />
+                  <i
+                    class="fas fa-cloud-rain"
+                    style="color: #10b981; font-size: 1.5rem"
+                  ></i>
+                  <div style="color: white; margin-top: 5px">Rainfall Data</div>
+                </div>
+              </div>
+            </div>
+            <div id="uploadStatus" class="status-message"></div>
+          </div>
+
+          <div class="glass-card">
+            <h3 class="card-title">
+              <i class="fas fa-calendar-alt"></i> माह चयन
+            </h3>
+            <div class="form-group">
+              <label class="form-label">माह</label>
+              <select
+                class="form-select"
+                id="monthSelect"
+                onchange="updateDynamicContent()"
+              >
+                <option value="0">जनवरी</option>
+                <option value="1">फरवरी</option>
+                <option value="2" selected>मार्च</option>
+                <option value="3">अप्रैल</option>
+                <option value="4">मई</option>
+                <option value="5">जून</option>
+                <option value="6">जुलाई</option>
+                <option value="7">अगस्त</option>
+                <option value="8">सितंबर</option>
+                <option value="9">अक्टूबर</option>
+                <option value="10">नवंबर</option>
+                <option value="11">दिसंबर</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">वर्ष</label>
+              <select
+                class="form-select"
+                id="yearSelect"
+                onchange="updateDynamicContent()"
+              >
+                <option value="2022">2022</option>
+                <option value="2023">2023</option>
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026" selected>2026</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" onclick="generateAnalysis()">
+              <div class="spinner" id="analysisSpinner"></div>
+              <span id="analysisText"
+                ><i class="fas fa-calculator"></i> विश्लेषण करें</span
+              >
+            </button>
+          </div>
+
+          <div class="glass-card" id="previewCard" style="display: none">
+            <h3 class="card-title">
+              <i class="fas fa-table"></i> डेटा पूर्वावलोकन
+            </h3>
+            <div class="data-preview" id="dataPreview"></div>
+          </div>
+        </div>
+
+        <div class="main-content">
+          <div class="content-card" id="analysisCard" style="display: none">
+            <h2 class="section-title">
+              <i class="fas fa-chart-line"></i> स्वचालित विश्लेषण परिणाम
+            </h2>
+            <div class="analysis-grid" id="analysisGrid"></div>
+            <div class="editable-section">
+              <h3 class="editable-title">विश्लेषण रिपोर्ट (संपादन योग्य)</h3>
+              <textarea
+                class="editable-content"
+                id="analysisReport"
+                placeholder="विश्लेषण रिपोर्ट यहां दिखाई देगी..."
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="content-card" id="chartsCard" style="display: none">
+            <h2 class="section-title">
+              <i class="fas fa-chart-bar"></i> चार्ट और ग्राफ
+            </h2>
+
+            <div class="chart-container">
+              <h3 class="chart-title" id="rainfallChartTitle">
+                बिहार राज्य के विभिन्न जिलों का मासिक संचयी वर्षा का चित्रण
+              </h3>
+              <div class="chart-wrapper">
+                <canvas id="rainfallChart"></canvas>
+              </div>
+              <div class="chart-upload-section">
+                <div
+                  class="image-upload-btn"
+                  onclick="document.getElementById('rainfallChartImg').click()"
+                >
+                  <input
+                    type="file"
+                    id="rainfallChartImg"
+                    accept="image/*"
+                    onchange="previewImage(this, 'rainfallChartImgPreview')"
+                  />
+                  <span
+                    ><i class="fas fa-image"></i> चार्ट इमेज अपलोड करें</span
+                  >
+                </div>
+                <img
+                  id="rainfallChartImgPreview"
+                  class="preview-image"
+                  style="display: none"
+                />
+              </div>
+              <div class="chart-actions">
+                <button
+                  class="btn btn-secondary btn-small"
+                  onclick="downloadChart('rainfallChart')"
+                >
+                  <i class="fas fa-download"></i> PNG डाउनलोड
+                </button>
+              </div>
+            </div>
+
+            <div
+              class="fto-pto-section"
+              id="ftoPtoSection"
+              style="display: none"
+            >
+              <h3 class="section-title">
+                <i class="fas fa-history"></i> FTO और PTO 5-वर्षीय विश्लेषण
+              </h3>
+              <div class="fto-pto-tabs">
+                <button
+                  class="fto-pto-tab active"
+                  onclick="switchFtoPtoTab('fto')"
+                >
+                  FTO डेटा
+                </button>
+                <button class="fto-pto-tab" onclick="switchFtoPtoTab('pto')">
+                  PTO डेटा
+                </button>
+              </div>
+              <div id="ftoContent" class="fto-pto-content active">
+                <div id="ftoTables"></div>
+                <div id="ftoCharts"></div>
+              </div>
+              <div id="ptoContent" class="fto-pto-content">
+                <div id="ptoTables"></div>
+                <div id="ptoCharts"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="content-card" id="outlookCard">
+            <h2 class="section-title">
+              <i class="fas fa-binoculars"></i> मासिक दृष्टिकोण
+            </h2>
+
+            <!-- ════════════════════ OUTLOOK BUILDER STYLES ════════════════════ -->
+            <style>
+              .ob-card {
+                background: #fff;
+                border: 2px solid #e2e8f0;
+                border-radius: 14px;
+                margin-bottom: 28px;
+                overflow: hidden;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+              }
+              .ob-header {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 14px 20px;
+                font-weight: 700;
+                font-size: 1.05rem;
+              }
+              .ob-header.rain {
+                background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+                color: #1e40af;
+              }
+              .ob-header.maxt {
+                background: linear-gradient(135deg, #fee2e2, #fecaca);
+                color: #991b1b;
+              }
+              .ob-header.mint {
+                background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+                color: #166534;
+              }
+              .ob-header.wave {
+                background: linear-gradient(135deg, #fef3c7, #fde68a);
+                color: #92400e;
+              }
+              .ob-body {
+                padding: 18px 20px;
+              }
+              .ob-row {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 12px;
+              }
+              .ob-label {
+                font-size: 0.82rem;
+                font-weight: 600;
+                color: #374151;
+                min-width: 90px;
+              }
+              .ob-select {
+                padding: 7px 10px;
+                border: 1px solid #d1d5db;
+                border-radius: 8px;
+                font-family: inherit;
+                font-size: 0.88rem;
+                background: #fff;
+                color: #111;
+              }
+              .ob-select:focus {
+                outline: none;
+                border-color: #3b82f6;
+              }
+              .ob-input {
+                padding: 7px 10px;
+                border: 1px solid #d1d5db;
+                border-radius: 8px;
+                font-family: inherit;
+                font-size: 0.88rem;
+                width: 130px;
+              }
+              .ob-checkbox-row {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 0.85rem;
+                color: #374151;
+                margin-bottom: 10px;
+              }
+              .ob-btn-gen {
+                padding: 8px 18px;
+                background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+                color: #fff;
+                border: none;
+                border-radius: 8px;
+                font-size: 0.88rem;
+                font-weight: 600;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-family: inherit;
+              }
+              .ob-btn-gen:hover {
+                opacity: 0.9;
+              }
+              .ob-btn-add {
+                padding: 8px 18px;
+                background: linear-gradient(135deg, #10b981, #059669);
+                color: #fff;
+                border: none;
+                border-radius: 8px;
+                font-size: 0.88rem;
+                font-weight: 600;
+                cursor: pointer;
+                font-family: inherit;
+              }
+              .ob-btn-add:hover {
+                opacity: 0.9;
+              }
+              .ob-btn-clear {
+                padding: 8px 14px;
+                background: #f1f5f9;
+                border: 1px solid #cbd5e1;
+                border-radius: 8px;
+                font-size: 0.88rem;
+                cursor: pointer;
+                font-family: inherit;
+              }
+              .ob-preview-box {
+                width: 100%;
+                min-height: 70px;
+                padding: 12px;
+                border: 2px solid #3b82f6;
+                border-radius: 10px;
+                font-family: inherit;
+                font-size: 0.92rem;
+                line-height: 1.6;
+                resize: vertical;
+                color: #1f2937;
+                background: #f8faff;
+                margin-top: 4px;
+              }
+              .ob-final-box {
+                width: 100%;
+                min-height: 120px;
+                padding: 12px;
+                border: 2px solid #10b981;
+                border-radius: 10px;
+                font-family: inherit;
+                font-size: 0.92rem;
+                line-height: 1.6;
+                resize: vertical;
+                color: #1f2937;
+                background: #f0fdf4;
+              }
+              .ob-section-label {
+                font-size: 0.8rem;
+                font-weight: 700;
+                color: #6b7280;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                margin-bottom: 6px;
+              }
+              .ob-divider {
+                border: none;
+                border-top: 1px dashed #e2e8f0;
+                margin: 14px 0;
+              }
+              .ob-normal-toggle {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 0.82rem;
+                color: #6b7280;
+              }
+
+              /* Area Selector Styles */
+              .ob-area-block {
+                background: #f8faff;
+                border: 1px solid #dbeafe;
+                border-radius: 10px;
+                padding: 12px 14px;
+                margin-bottom: 14px;
+              }
+              .ob-area-title {
+                font-size: 0.8rem;
+                font-weight: 700;
+                color: #1e40af;
+                margin-bottom: 10px;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+              }
+              .ob-area-cols {
+                display: grid;
+                grid-template-columns: 1.2fr 3fr;
+                gap: 10px;
+              }
+              .ob-area-col-label {
+                font-size: 0.78rem;
+                font-weight: 600;
+                color: #374151;
+                margin-bottom: 6px;
+              }
+              .ob-checkbox-list {
+                width: 100%;
+                border: 1px solid #d1d5db;
+                border-radius: 8px;
+                background: #fff;
+                padding: 8px;
+                max-height: 250px;
+                overflow-y: auto;
+                font-size: 0.82rem;
+                color: #111;
+              }
+              .ob-checkbox-list label {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                margin-bottom: 5px;
+                cursor: pointer;
+              }
+              .ob-checkbox-list input[type="checkbox"] {
+                cursor: pointer;
+                margin: 0;
+              }
+              .ob-checkbox-list.district-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                column-gap: 8px;
+                align-content: start;
+              }
+              .ob-region-row {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 10px;
+              }
+              .ob-region-select {
+                padding: 7px 10px;
+                border: 1px solid #d1d5db;
+                border-radius: 8px;
+                font-family: inherit;
+                font-size: 0.88rem;
+                background: #fff;
+                color: #111;
+                flex: 1;
+                min-width: 160px;
+              }
+              .ob-suffix-select {
+                padding: 7px 10px;
+                border: 1px solid #d1d5db;
+                border-radius: 8px;
+                font-family: inherit;
+                font-size: 0.88rem;
+                background: #fff;
+                color: #111;
+              }
+              .ob-area-hint {
+                font-size: 0.75rem;
+                color: #6b7280;
+                margin-top: 6px;
+                font-style: italic;
+              }
+            </style>
+
+            <!-- ════════════ 1. वर्षा दृष्टिकोण ════════════ -->
+            <div class="ob-card">
+              <div class="ob-header rain">
+                <i class="fas fa-cloud-rain"></i> वर्षा दृष्टिकोण &nbsp;<span
+                  style="font-weight: 400; font-size: 0.85rem"
+                  >(Rainfall Outlook)</span
+                >
+              </div>
+              <div class="ob-body">
+                <!-- Builder -->
+                <div class="ob-section-label">📝 वाक्य बनाएं</div>
+
+                <!-- Area Selector -->
+                <div class="ob-area-block">
+                  <div class="ob-area-title">
+                    <i class="fas fa-map-marked-alt"></i> क्षेत्र चयन (Area
+                    Selection)
+                  </div>
+                  <div
+                    style="
+                      margin-bottom: 12px;
+                      padding: 8px;
+                      background: #e0f2fe;
+                      border-radius: 6px;
+                      border: 1px solid #bfdbfe;
+                    "
+                  >
+                    <label
+                      style="
+                        font-weight: 700;
+                        color: #1e40af;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                      "
+                    >
+                      <input
+                        type="checkbox"
+                        id="rf_entire_bihar"
+                        onchange="buildOutlookSentence('rf')"
+                        style="width: 16px; height: 16px"
+                        checked
+                      />
+                      संपूर्ण बिहार (Entire Bihar)
+                    </label>
+                  </div>
+                  <div class="ob-area-cols">
+                    <div>
+                      <div class="ob-area-col-label">Sectors (बहु-चयन)</div>
+                      <div class="ob-checkbox-list" id="rf_sectors"></div>
+                    </div>
+                    <div>
+                      <div class="ob-area-col-label">Districts (बहु-चयन)</div>
+                      <div
+                        class="ob-checkbox-list district-grid"
+                        id="rf_districts"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="ob-area-hint">
+                    ※ यदि "संपूर्ण बिहार" या कोई क्षेत्र चुना है, तो नीचे दिए गए
+                    'Region' का उपयोग उसके साथ मिलाकर किया जाएगा। (If "Entire
+                    Bihar" or any area is selected, the 'Region' below will be
+                    combined with it.)
+                  </div>
+                  <hr class="ob-divider" style="margin: 10px 0" />
+                  <div class="ob-region-row">
+                    <span class="ob-label" style="min-width: 60px"
+                      >Region:</span
+                    >
+                    <select
+                      class="ob-region-select"
+                      id="rf_region_base"
+                      onchange="buildOutlookSentence('rf')"
+                    >
+                      <option value="राज्य के अधिकांश" selected>
+                        राज्य के अधिकांश
+                      </option>
+                      <option value="राज्य के अनेक">राज्य के अनेक</option>
+                      <option value="राज्य के कुछ">राज्य के कुछ</option>
+                      <option value="राज्य के एक या दो">
+                        राज्य के एक या दो
+                      </option>
+                    </select>
+                    <select
+                      class="ob-suffix-select"
+                      id="rf_region_suffix"
+                      onchange="buildOutlookSentence('rf')"
+                    >
+                      <option value="स्थानों">स्थानों</option>
+                      <option value="क्षेत्र" selected>क्षेत्र</option>
+                      <option value="भागों">भागों</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="ob-row">
+                  <span class="ob-label">पूर्वानुमान:</span>
+                  <select class="ob-select" id="rf_forecast">
+                    <option
+                      value="सामान्य से नीचे वर्षापात होने का पूर्वानुमान है।"
+                    >
+                      सामान्य से नीचे (Below Normal)
+                    </option>
+                    <option
+                      value="सामान्य से लेकर सामान्य से नीचे वर्षापात होने का पूर्वानुमान है।"
+                    >
+                      सामान्य से नीचे/सामान्य (Below to Normal)
+                    </option>
+                    <option
+                      value="सामान्य या सामान्य से नीचे वर्षापात होने का पूर्वानुमान है।"
+                    >
+                      सामान्य या सामान्य से नीचे
+                    </option>
+                    <option value="सामान्य वर्षापात होने का पूर्वानुमान है।">
+                      सामान्य (Normal)
+                    </option>
+                    <option
+                      value="संचयी रूप से सामान्य वर्षापात होने का पूर्वानुमान है।"
+                    >
+                      संचयी रूप से सामान्य
+                    </option>
+                    <option
+                      value="सामान्य से अधिक वर्षापात होने का पूर्वानुमान है।"
+                    >
+                      सामान्य से अधिक (Above Normal)
+                    </option>
+                    <option
+                      value="सामान्य अथवा सामान्य से अधिक वर्षा होने की संभावना है।"
+                    >
+                      सामान्य अथवा सामान्य से अधिक
+                    </option>
+                    <option value="सामान्य से कम वर्षा होने की संभावना है।">
+                      सामान्य से कम
+                    </option>
+                    <option value="सामान्य से अधिक वर्षा होने की संभावना है।">
+                      सामान्य से अधिक (संभावना)
+                    </option>
+                  </select>
+                </div>
+                <div class="ob-checkbox-row">
+                  <input
+                    type="checkbox"
+                    id="rf_secondary"
+                    onchange="toggleSecondary('rf')"
+                  />
+                  <label for="rf_secondary"
+                    >द्वितीयक भाग जोड़ें / Add Secondary Part (जबकि शेष... /
+                    While remaining...)</label
+                  >
+                </div>
+                <div
+                  id="rf_secondary_box"
+                  style="
+                    display: none;
+                    padding: 10px;
+                    background: #f8faff;
+                    border-radius: 8px;
+                    margin-bottom: 10px;
+                    border: 1px solid #bfdbfe;
+                  "
+                >
+                  <div
+                    class="ob-section-label"
+                    style="margin-bottom: 8px; color: #1e40af"
+                  >
+                    क्षेत्र 2 (Secondary Area)
+                  </div>
+                  <!-- Area Selector -->
+                  <div
+                    class="ob-area-block"
+                    style="margin-bottom: 8px; padding: 10px"
+                  >
+                    <div
+                      style="
+                        margin-bottom: 10px;
+                        padding: 6px;
+                        background: #e0f2fe;
+                        border-radius: 6px;
+                      "
+                    >
+                      <label
+                        style="
+                          font-weight: 700;
+                          color: #1e40af;
+                          cursor: pointer;
+                          display: flex;
+                          align-items: center;
+                          gap: 8px;
+                        "
+                      >
+                        <input
+                          type="checkbox"
+                          id="rf2_entire_bihar"
+                          onchange="buildOutlookSentence('rf')"
+                          style="width: 14px; height: 14px"
+                          checked
+                        />
+                        संपूर्ण बिहार (Entire Bihar)
+                      </label>
+                    </div>
+                    <div class="ob-area-cols">
+                      <div>
+                        <div class="ob-area-col-label">Sectors</div>
+                        <div class="ob-checkbox-list" id="rf2_sectors"></div>
+                      </div>
+                      <div>
+                        <div class="ob-area-col-label">Districts</div>
+                        <div
+                          class="ob-checkbox-list district-grid"
+                          id="rf2_districts"
+                        ></div>
+                      </div>
+                    </div>
+                    <div
+                      class="ob-region-row"
+                      style="margin-top: 10px; margin-bottom: 0"
+                    >
+                      <span class="ob-label" style="min-width: 60px"
+                        >Region:</span
+                      >
+                      <select
+                        class="ob-region-select"
+                        id="rf2_region_base"
+                        onchange="buildOutlookSentence('rf')"
+                      >
+                        <option value="राज्य के शेष" selected>
+                          राज्य के शेष
+                        </option>
+                        <option value="राज्य के अधिकांश">
+                          राज्य के अधिकांश
+                        </option>
+                        <option value="राज्य के अनेक">राज्य के अनेक</option>
+                        <option value="राज्य के कुछ">राज्य के कुछ</option>
+                        <option value="राज्य के एक या दो">
+                          राज्य के एक या दो
+                        </option>
+                      </select>
+                      <select
+                        class="ob-suffix-select"
+                        id="rf2_region_suffix"
+                        onchange="buildOutlookSentence('rf')"
+                      >
+                        <option value="भागों">भागों</option>
+                        <option value="स्थानों">स्थानों</option>
+                        <option value="क्षेत्र" selected>क्षेत्र</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="ob-row" style="margin-bottom: 0">
+                    <span class="ob-label">पूर्वानुमान 2:</span>
+                    <select
+                      class="ob-select"
+                      id="rf2_forecast"
+                      onchange="buildOutlookSentence('rf')"
+                    >
+                      <option
+                        value="सामान्य से नीचे वर्षापात होने का पूर्वानुमान है।"
+                      >
+                        सामान्य से नीचे (Below Normal)
+                      </option>
+                      <option
+                        value="सामान्य से लेकर सामान्य से नीचे वर्षापात होने का पूर्वानुमान है।"
+                      >
+                        सामान्य से नीचे/सामान्य (Below to Normal)
+                      </option>
+                      <option
+                        value="सामान्य या सामान्य से नीचे वर्षापात होने का पूर्वानुमान है।"
+                      >
+                        सामान्य या सामान्य से नीचे
+                      </option>
+                      <option value="सामान्य वर्षापात होने का पूर्वानुमान है।">
+                        सामान्य (Normal)
+                      </option>
+                      <option
+                        value="संचयी रूप से सामान्य वर्षापात होने का पूर्वानुमान है।"
+                      >
+                        संचयी रूप से सामान्य
+                      </option>
+                      <option
+                        value="सामान्य से अधिक वर्षापात होने का पूर्वानुमान है।"
+                      >
+                        सामान्य से अधिक (Above Normal)
+                      </option>
+                      <option
+                        value="सामान्य अथवा सामान्य से अधिक वर्षा होने की संभावना है।"
+                      >
+                        सामान्य अथवा सामान्य से अधिक
+                      </option>
+                      <option value="सामान्य से कम वर्षा होने की संभावना है।">
+                        सामान्य से कम
+                      </option>
+                      <option value="सामान्य से अधिक वर्षा होने की संभावना है।">
+                        सामान्य से अधिक (संभावना)
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="ob-checkbox-row">
+                  <input
+                    type="checkbox"
+                    id="rf_show_normal"
+                    onchange="buildOutlookSentence('rf')"
+                  />
+                  <label for="rf_show_normal"
+                    >सामान्य वर्षा मान जोड़ें / Add Normal Rainfall Value</label
+                  >
+                  <input
+                    type="text"
+                    class="ob-input"
+                    id="rf_normal_val"
+                    placeholder="जैसे: 8.2 मिमी"
+                    oninput="buildOutlookSentence('rf')"
+                    style="display: none"
+                  />
+                </div>
+                <div class="ob-row">
+                  <button
+                    class="ob-btn-gen"
+                    onclick="buildOutlookSentence('rf')"
+                  >
+                    <i class="fas fa-magic"></i> वाक्य बनाएं / Generate Sentence
+                  </button>
+                </div>
+                <!-- Single sentence preview -->
+                <div class="ob-section-label">
+                  👁 पूर्वावलोकन / Preview (संपादन योग्य / Editable)
+                </div>
+                <textarea
+                  class="ob-preview-box"
+                  id="rf_preview"
+                  rows="3"
+                  oninput=""
+                ></textarea>
+                <div class="ob-row" style="margin-top: 10px">
+                  <button
+                    class="ob-btn-add"
+                    onclick="appendToFinal('rf_preview', 'rainfallOutlook')"
+                  >
+                    <i class="fas fa-plus"></i> अंतिम पाठ में जोड़ें / Add to
+                    Final Text
+                  </button>
+                  <button
+                    class="ob-btn-clear"
+                    onclick="clearFinal('rainfallOutlook')"
+                  >
+                    <i class="fas fa-trash"></i> पाठ साफ़ करें / Clear Text
+                  </button>
+                </div>
+                <hr class="ob-divider" />
+                <!-- Final editable output -->
+                <div class="ob-section-label">
+                  📄 अंतिम वर्षा दृष्टिकोण पाठ / Final Rainfall Outlook Text
+                  (संपादन योग्य / Editable)
+                </div>
+                <textarea
+                  class="ob-final-box"
+                  id="rainfallOutlook"
+                  placeholder="वर्षापात (Rainfall)&#10;&#10;यहाँ वाक्य जोड़ते जाएं..."
+                ></textarea>
+                <!-- Image upload -->
+                <div
+                  class="image-upload-btn"
+                  onclick="document.getElementById('rainfallImg').click()"
+                  style="margin-top: 12px"
+                >
+                  <input
+                    type="file"
+                    id="rainfallImg"
+                    accept="image/*"
+                    onchange="previewImage(this, 'rainfallImgPreview')"
+                  />
+                  <span><i class="fas fa-image"></i> मानचित्र अपलोड करें</span>
+                </div>
+                <img
+                  id="rainfallImgPreview"
+                  class="preview-image"
+                  style="display: none"
+                />
+              </div>
+            </div>
+
+            <!-- ════════════ 2. अधिकतम तापमान दृष्टिकोण ════════════ -->
+            <div class="ob-card">
+              <div class="ob-header maxt">
+                <i class="fas fa-temperature-high"></i> अधिकतम तापमान दृष्टिकोण
+                &nbsp;<span style="font-weight: 400; font-size: 0.85rem"
+                  >(Maximum Temperature Outlook)</span
+                >
+              </div>
+              <div class="ob-body">
+                <div class="ob-section-label">📝 वाक्य बनाएं</div>
+
+                <!-- Area Selector -->
+                <div class="ob-area-block">
+                  <div class="ob-area-title">
+                    <i class="fas fa-map-marked-alt"></i> क्षेत्र चयन (Area
+                    Selection)
+                  </div>
+                  <div
+                    style="
+                      margin-bottom: 12px;
+                      padding: 8px;
+                      background: #e0f2fe;
+                      border-radius: 6px;
+                      border: 1px solid #bfdbfe;
+                    "
+                  >
+                    <label
+                      style="
+                        font-weight: 700;
+                        color: #1e40af;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                      "
+                    >
+                      <input
+                        type="checkbox"
+                        id="mt_entire_bihar"
+                        onchange="buildOutlookSentence('mt')"
+                        style="width: 16px; height: 16px"
+                        checked
+                      />
+                      संपूर्ण बिहार (Entire Bihar)
+                    </label>
+                  </div>
+                  <div class="ob-area-cols">
+                    <div>
+                      <div class="ob-area-col-label">Sectors (बहु-चयन)</div>
+                      <div class="ob-checkbox-list" id="mt_sectors"></div>
+                    </div>
+                    <div>
+                      <div class="ob-area-col-label">Districts (बहु-चयन)</div>
+                      <div
+                        class="ob-checkbox-list district-grid"
+                        id="mt_districts"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="ob-area-hint">
+                    ※ यदि "संपूर्ण बिहार" या कोई क्षेत्र चुना है, तो नीचे दिए गए
+                    'Region' का उपयोग उसके साथ मिलाकर किया जाएगा। (If "Entire
+                    Bihar" or any area is selected, the 'Region' below will be
+                    combined with it.)
+                  </div>
+                  <hr class="ob-divider" style="margin: 10px 0" />
+                  <div class="ob-region-row">
+                    <span class="ob-label" style="min-width: 60px"
+                      >Region:</span
+                    >
+                    <select
+                      class="ob-region-select"
+                      id="mt_region_base"
+                      onchange="buildOutlookSentence('mt')"
+                    >
+                      <option value="राज्य के अधिकांश" selected>
+                        राज्य के अधिकांश
+                      </option>
+                      <option value="राज्य के अनेक">राज्य के अनेक</option>
+                      <option value="राज्य के कुछ">राज्य के कुछ</option>
+                      <option value="राज्य के एक या दो">
+                        राज्य के एक या दो
+                      </option>
+                    </select>
+                    <select
+                      class="ob-suffix-select"
+                      id="mt_region_suffix"
+                      onchange="buildOutlookSentence('mt')"
+                    >
+                      <option value="स्थानों">स्थानों</option>
+                      <option value="क्षेत्र" selected>क्षेत्र</option>
+                      <option value="भागों">भागों</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="ob-row">
+                  <span class="ob-label">स्थिति:</span>
+                  <select class="ob-select" id="mt_condition">
+                    <option value="सामान्य से अधिक रहने की संभावना है।">
+                      सामान्य से अधिक (Above Normal)
+                    </option>
+                    <option value="सामान्य रहने की संभावना है।">
+                      सामान्य (Normal)
+                    </option>
+                    <option value="सामान्य से कम रहने की संभावना है।">
+                      सामान्य से कम (Below Normal)
+                    </option>
+                    <option value="सामान्य से अधिक रहने का पूर्वानुमान है।">
+                      सामान्य से अधिक (पूर्वानुमान)
+                    </option>
+                  </select>
+                </div>
+                <!-- Optional secondary clause -->
+                <div class="ob-checkbox-row">
+                  <input
+                    type="checkbox"
+                    id="mt_secondary"
+                    onchange="toggleSecondary('mt')"
+                  />
+                  <label for="mt_secondary"
+                    >द्वितीयक भाग जोड़ें / Add Secondary Part (जबकि शेष... /
+                    While remaining...)</label
+                  >
+                </div>
+                <div
+                  id="mt_secondary_box"
+                  style="
+                    display: none;
+                    padding: 10px;
+                    background: #fef2f2;
+                    border-radius: 8px;
+                    margin-bottom: 10px;
+                    border: 1px solid #fca5a5;
+                  "
+                >
+                  <div
+                    class="ob-section-label"
+                    style="margin-bottom: 8px; color: #991b1b"
+                  >
+                    क्षेत्र 2 (Secondary Area)
+                  </div>
+                  <!-- Area Selector -->
+                  <div
+                    class="ob-area-block"
+                    style="margin-bottom: 8px; padding: 10px"
+                  >
+                    <div
+                      style="
+                        margin-bottom: 10px;
+                        padding: 6px;
+                        background: #fee2e2;
+                        border-radius: 6px;
+                      "
+                    >
+                      <label
+                        style="
+                          font-weight: 700;
+                          color: #991b1b;
+                          cursor: pointer;
+                          display: flex;
+                          align-items: center;
+                          gap: 8px;
+                        "
+                      >
+                        <input
+                          type="checkbox"
+                          id="mt2_entire_bihar"
+                          onchange="buildOutlookSentence('mt')"
+                          style="width: 14px; height: 14px"
+                          checked
+                        />
+                        संपूर्ण बिहार (Entire Bihar)
+                      </label>
+                    </div>
+                    <div class="ob-area-cols">
+                      <div>
+                        <div class="ob-area-col-label">Sectors</div>
+                        <div class="ob-checkbox-list" id="mt2_sectors"></div>
+                      </div>
+                      <div>
+                        <div class="ob-area-col-label">Districts</div>
+                        <div
+                          class="ob-checkbox-list district-grid"
+                          id="mt2_districts"
+                        ></div>
+                      </div>
+                    </div>
+                    <div
+                      class="ob-region-row"
+                      style="margin-top: 10px; margin-bottom: 0"
+                    >
+                      <span class="ob-label" style="min-width: 60px"
+                        >Region:</span
+                      >
+                      <select
+                        class="ob-region-select"
+                        id="mt2_region_base"
+                        onchange="buildOutlookSentence('mt')"
+                      >
+                        <option value="राज्य के शेष" selected>
+                          राज्य के शेष
+                        </option>
+                        <option value="राज्य के अधिकांश">
+                          राज्य के अधिकांश
+                        </option>
+                        <option value="राज्य के अनेक">राज्य के अनेक</option>
+                        <option value="राज्य के कुछ">राज्य के कुछ</option>
+                        <option value="राज्य के एक या दो">
+                          राज्य के एक या दो
+                        </option>
+                      </select>
+                      <select
+                        class="ob-suffix-select"
+                        id="mt2_region_suffix"
+                        onchange="buildOutlookSentence('mt')"
+                      >
+                        <option value="भागों">भागों</option>
+                        <option value="स्थानों">स्थानों</option>
+                        <option value="क्षेत्र" selected>क्षेत्र</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="ob-row" style="margin-bottom: 0">
+                    <span class="ob-label">स्थिति 2:</span>
+                    <select
+                      class="ob-select"
+                      id="mt2_condition"
+                      onchange="buildOutlookSentence('mt')"
+                    >
+                      <option value="सामान्य से अधिक रहने की संभावना है।">
+                        सामान्य से अधिक (Above Normal)
+                      </option>
+                      <option value="सामान्य रहने की संभावना है।">
+                        सामान्य (Normal)
+                      </option>
+                      <option value="सामान्य से कम रहने की संभावना है।">
+                        सामान्य से कम (Below Normal)
+                      </option>
+                      <option value="सामान्य से अधिक रहने का पूर्वानुमान है।">
+                        सामान्य से अधिक (पूर्वानुमान)
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="ob-checkbox-row">
+                  <input
+                    type="checkbox"
+                    id="mt_show_normal"
+                    onchange="buildOutlookSentence('mt')"
+                  />
+                  <label for="mt_show_normal"
+                    >सामान्य तापमान मान जोड़ें / Add Normal Temperature
+                    Value</label
+                  >
+                  <input
+                    type="text"
+                    class="ob-input"
+                    id="mt_normal_val"
+                    placeholder="जैसे: 30-33°C"
+                    oninput="buildOutlookSentence('mt')"
+                    style="display: none"
+                  />
+                </div>
+                <div class="ob-row">
+                  <button
+                    class="ob-btn-gen"
+                    onclick="buildOutlookSentence('mt')"
+                  >
+                    <i class="fas fa-magic"></i> वाक्य बनाएं / Generate Sentence
+                  </button>
+                </div>
+                <div class="ob-section-label">
+                  👁 पूर्वावलोकन / Preview (संपादन योग्य / Editable)
+                </div>
+                <textarea
+                  class="ob-preview-box"
+                  id="mt_preview"
+                  rows="3"
+                ></textarea>
+                <div class="ob-row" style="margin-top: 10px">
+                  <button
+                    class="ob-btn-add"
+                    onclick="appendToFinal('mt_preview', 'maxTempOutlook')"
+                  >
+                    <i class="fas fa-plus"></i> अंतिम पाठ में जोड़ें / Add to
+                    Final Text
+                  </button>
+                  <button
+                    class="ob-btn-clear"
+                    onclick="clearFinal('maxTempOutlook')"
+                  >
+                    <i class="fas fa-trash"></i> पाठ साफ़ करें / Clear Text
+                  </button>
+                </div>
+                <hr class="ob-divider" />
+                <div class="ob-section-label">
+                  📄 अंतिम अधिकतम तापमान दृष्टिकोण पाठ / Final Max Temp Outlook
+                  Text (संपादन योग्य / Editable)
+                </div>
+                <textarea
+                  class="ob-final-box"
+                  id="maxTempOutlook"
+                  placeholder="अधिकतम तापमान (Maximum Temperature)&#10;&#10;यहाँ वाक्य जोड़ते जाएं..."
+                ></textarea>
+                <div
+                  class="image-upload-btn"
+                  onclick="document.getElementById('maxTempImg').click()"
+                  style="margin-top: 12px"
+                >
+                  <input
+                    type="file"
+                    id="maxTempImg"
+                    accept="image/*"
+                    onchange="previewImage(this, 'maxTempImgPreview')"
+                  />
+                  <span><i class="fas fa-image"></i> मानचित्र अपलोड करें</span>
+                </div>
+                <img
+                  id="maxTempImgPreview"
+                  class="preview-image"
+                  style="display: none"
+                />
+              </div>
+            </div>
+
+            <!-- ════════════ 3. न्यूनतम तापमान दृष्टिकोण ════════════ -->
+            <div class="ob-card">
+              <div class="ob-header mint">
+                <i class="fas fa-temperature-low"></i> न्यूनतम तापमान दृष्टिकोण
+                &nbsp;<span style="font-weight: 400; font-size: 0.85rem"
+                  >(Minimum Temperature Outlook)</span
+                >
+              </div>
+              <div class="ob-body">
+                <div class="ob-section-label">📝 वाक्य बनाएं</div>
+
+                <!-- Area Selector -->
+                <div class="ob-area-block">
+                  <div class="ob-area-title">
+                    <i class="fas fa-map-marked-alt"></i> क्षेत्र चयन (Area
+                    Selection)
+                  </div>
+                  <div
+                    style="
+                      margin-bottom: 12px;
+                      padding: 8px;
+                      background: #e0f2fe;
+                      border-radius: 6px;
+                      border: 1px solid #bfdbfe;
+                    "
+                  >
+                    <label
+                      style="
+                        font-weight: 700;
+                        color: #1e40af;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                      "
+                    >
+                      <input
+                        type="checkbox"
+                        id="mn_entire_bihar"
+                        onchange="buildOutlookSentence('mn')"
+                        style="width: 16px; height: 16px"
+                        checked
+                      />
+                      संपूर्ण बिहार (Entire Bihar)
+                    </label>
+                  </div>
+                  <div class="ob-area-cols">
+                    <div>
+                      <div class="ob-area-col-label">Sectors (बहु-चयन)</div>
+                      <div class="ob-checkbox-list" id="mn_sectors"></div>
+                    </div>
+                    <div>
+                      <div class="ob-area-col-label">Districts (बहु-चयन)</div>
+                      <div
+                        class="ob-checkbox-list district-grid"
+                        id="mn_districts"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="ob-area-hint">
+                    ※ यदि "संपूर्ण बिहार" या कोई क्षेत्र चुना है, तो नीचे दिए गए
+                    'Region' का उपयोग उसके साथ मिलाकर किया जाएगा। (If "Entire
+                    Bihar" or any area is selected, the 'Region' below will be
+                    combined with it.)
+                  </div>
+                  <hr class="ob-divider" style="margin: 10px 0" />
+                  <div class="ob-region-row">
+                    <span class="ob-label" style="min-width: 60px"
+                      >Region:</span
+                    >
+                    <select
+                      class="ob-region-select"
+                      id="mn_region_base"
+                      onchange="buildOutlookSentence('mn')"
+                    >
+                      <option value="राज्य के अधिकांश" selected>
+                        राज्य के अधिकांश
+                      </option>
+                      <option value="राज्य के अनेक">राज्य के अनेक</option>
+                      <option value="राज्य के कुछ">राज्य के कुछ</option>
+                      <option value="राज्य के एक या दो">
+                        राज्य के एक या दो
+                      </option>
+                    </select>
+                    <select
+                      class="ob-suffix-select"
+                      id="mn_region_suffix"
+                      onchange="buildOutlookSentence('mn')"
+                    >
+                      <option value="स्थानों">स्थानों</option>
+                      <option value="क्षेत्र" selected>क्षेत्र</option>
+                      <option value="भागों">भागों</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="ob-row">
+                  <span class="ob-label">स्थिति:</span>
+                  <select class="ob-select" id="mn_condition">
+                    <option value="सामान्य से अधिक रहने की संभावना है।">
+                      सामान्य से अधिक (Above Normal)
+                    </option>
+                    <option value="सामान्य रहने की संभावना है।">
+                      सामान्य (Normal)
+                    </option>
+                    <option value="सामान्य से कम रहने की संभावना है।">
+                      सामान्य से कम (Below Normal)
+                    </option>
+                    <option value="सामान्य से अधिक रहने का पूर्वानुमान है।">
+                      सामान्य से अधिक (पूर्वानुमान)
+                    </option>
+                  </select>
+                </div>
+                <!-- Optional secondary -->
+                <div class="ob-checkbox-row">
+                  <input
+                    type="checkbox"
+                    id="mn_secondary"
+                    onchange="toggleSecondary('mn')"
+                  />
+                  <label for="mn_secondary"
+                    >द्वितीयक भाग जोड़ें / Add Secondary Part (जबकि शेष... /
+                    While remaining...)</label
+                  >
+                </div>
+                <div
+                  id="mn_secondary_box"
+                  style="
+                    display: none;
+                    padding: 10px;
+                    background: #f0fdf4;
+                    border-radius: 8px;
+                    margin-bottom: 10px;
+                    border: 1px solid #bbf7d0;
+                  "
+                >
+                  <div
+                    class="ob-section-label"
+                    style="margin-bottom: 8px; color: #166534"
+                  >
+                    क्षेत्र 2 (Secondary Area)
+                  </div>
+                  <!-- Area Selector -->
+                  <div
+                    class="ob-area-block"
+                    style="margin-bottom: 8px; padding: 10px"
+                  >
+                    <div
+                      style="
+                        margin-bottom: 10px;
+                        padding: 6px;
+                        background: #dcfce7;
+                        border-radius: 6px;
+                      "
+                    >
+                      <label
+                        style="
+                          font-weight: 700;
+                          color: #166534;
+                          cursor: pointer;
+                          display: flex;
+                          align-items: center;
+                          gap: 8px;
+                        "
+                      >
+                        <input
+                          type="checkbox"
+                          id="mn2_entire_bihar"
+                          onchange="buildOutlookSentence('mn')"
+                          style="width: 14px; height: 14px"
+                          checked
+                        />
+                        संपूर्ण बिहार (Entire Bihar)
+                      </label>
+                    </div>
+                    <div class="ob-area-cols">
+                      <div>
+                        <div class="ob-area-col-label">Sectors</div>
+                        <div class="ob-checkbox-list" id="mn2_sectors"></div>
+                      </div>
+                      <div>
+                        <div class="ob-area-col-label">Districts</div>
+                        <div
+                          class="ob-checkbox-list district-grid"
+                          id="mn2_districts"
+                        ></div>
+                      </div>
+                    </div>
+                    <div
+                      class="ob-region-row"
+                      style="margin-top: 10px; margin-bottom: 0"
+                    >
+                      <span class="ob-label" style="min-width: 60px"
+                        >Region:</span
+                      >
+                      <select
+                        class="ob-region-select"
+                        id="mn2_region_base"
+                        onchange="buildOutlookSentence('mn')"
+                      >
+                        <option value="राज्य के शेष" selected>
+                          राज्य के शेष
+                        </option>
+                        <option value="राज्य के अधिकांश">
+                          राज्य के अधिकांश
+                        </option>
+                        <option value="राज्य के अनेक">राज्य के अनेक</option>
+                        <option value="राज्य के कुछ">राज्य के कुछ</option>
+                        <option value="राज्य के एक या दो">
+                          राज्य के एक या दो
+                        </option>
+                      </select>
+                      <select
+                        class="ob-suffix-select"
+                        id="mn2_region_suffix"
+                        onchange="buildOutlookSentence('mn')"
+                      >
+                        <option value="भागों">भागों</option>
+                        <option value="स्थानों">स्थानों</option>
+                        <option value="क्षेत्र" selected>क्षेत्र</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="ob-row" style="margin-bottom: 0">
+                    <span class="ob-label">स्थिति 2:</span>
+                    <select
+                      class="ob-select"
+                      id="mn2_condition"
+                      onchange="buildOutlookSentence('mn')"
+                    >
+                      <option value="सामान्य से अधिक रहने की संभावना है।">
+                        सामान्य से अधिक (Above Normal)
+                      </option>
+                      <option value="सामान्य रहने की संभावना है।">
+                        सामान्य (Normal)
+                      </option>
+                      <option value="सामान्य से कम रहने की संभावना है।">
+                        सामान्य से कम (Below Normal)
+                      </option>
+                      <option value="सामान्य से अधिक रहने का पूर्वानुमान है।">
+                        सामान्य से अधिक (पूर्वानुमान)
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <!-- probability % optional -->
+                <div class="ob-checkbox-row">
+                  <input
+                    type="checkbox"
+                    id="mn_prob"
+                    onchange="buildOutlookSentence('mn')"
+                  />
+                  <label for="mn_prob"
+                    >संभावना % जोड़ें / Add Probability %</label
+                  >
+                  <input
+                    type="text"
+                    class="ob-input"
+                    id="mn_prob_val"
+                    placeholder="जैसे: 40%"
+                    oninput="buildOutlookSentence('mn')"
+                    style="display: none; width: 80px"
+                  />
+                </div>
+                <div class="ob-checkbox-row">
+                  <input
+                    type="checkbox"
+                    id="mn_show_normal"
+                    onchange="buildOutlookSentence('mn')"
+                  />
+                  <label for="mn_show_normal"
+                    >सामान्य तापमान मान जोड़ें / Add Normal Temperature
+                    Value</label
+                  >
+                  <input
+                    type="text"
+                    class="ob-input"
+                    id="mn_normal_val"
+                    placeholder="जैसे: 15-17°C"
+                    oninput="buildOutlookSentence('mn')"
+                    style="display: none"
+                  />
+                </div>
+                <div class="ob-row">
+                  <button
+                    class="ob-btn-gen"
+                    onclick="buildOutlookSentence('mn')"
+                  >
+                    <i class="fas fa-magic"></i> वाक्य बनाएं / Generate Sentence
+                  </button>
+                </div>
+                <div class="ob-section-label">
+                  👁 पूर्वावलोकन / Preview (संपादन योग्य / Editable)
+                </div>
+                <textarea
+                  class="ob-preview-box"
+                  id="mn_preview"
+                  rows="3"
+                ></textarea>
+                <div class="ob-row" style="margin-top: 10px">
+                  <button
+                    class="ob-btn-add"
+                    onclick="appendToFinal('mn_preview', 'minTempOutlook')"
+                  >
+                    <i class="fas fa-plus"></i> अंतिम पाठ में जोड़ें / Add to
+                    Final Text
+                  </button>
+                  <button
+                    class="ob-btn-clear"
+                    onclick="clearFinal('minTempOutlook')"
+                  >
+                    <i class="fas fa-trash"></i> पाठ साफ़ करें / Clear Text
+                  </button>
+                </div>
+                <hr class="ob-divider" />
+                <div class="ob-section-label">
+                  📄 अंतिम न्यूनतम तापमान दृष्टिकोण पाठ / Final Min Temp Outlook
+                  Text (संपादन योग्य / Editable)
+                </div>
+                <textarea
+                  class="ob-final-box"
+                  id="minTempOutlook"
+                  placeholder="न्यूनतम तापमान (Minimum Temperature)&#10;&#10;यहाँ वाक्य जोड़ते जाएं..."
+                ></textarea>
+                <div
+                  class="image-upload-btn"
+                  onclick="document.getElementById('minTempImg').click()"
+                  style="margin-top: 12px"
+                >
+                  <input
+                    type="file"
+                    id="minTempImg"
+                    accept="image/*"
+                    onchange="previewImage(this, 'minTempImgPreview')"
+                  />
+                  <span><i class="fas fa-image"></i> मानचित्र अपलोड करें</span>
+                </div>
+                <img
+                  id="minTempImgPreview"
+                  class="preview-image"
+                  style="display: none"
+                />
+              </div>
+            </div>
+
+            <!-- ════════════ 4. उष्ण लहर / शीतलहर दृष्टिकोण ════════════ -->
+            <div class="ob-card">
+              <div class="ob-header wave">
+                <i class="fas fa-sun"></i>
+                <select
+                  id="waveType"
+                  onchange="updateWaveHeader()"
+                  style="
+                    border: none;
+                    background: transparent;
+                    font-weight: 700;
+                    color: #92400e;
+                    font-size: 1rem;
+                    cursor: pointer;
+                    font-family: inherit;
+                  "
+                >
+                  <option value="heatwave">
+                    उष्ण लहर दृष्टिकोण (Heat Wave Outlook)
+                  </option>
+                  <option value="coldwave">
+                    शीतलहर दृष्टिकोण (Cold Wave Outlook)
+                  </option>
+                </select>
+              </div>
+              <div class="ob-body">
+                <div class="ob-section-label">📝 वाक्य बनाएं</div>
+
+                <!-- Area Selector -->
+                <div class="ob-area-block">
+                  <div class="ob-area-title">
+                    <i class="fas fa-map-marked-alt"></i> क्षेत्र चयन (Area
+                    Selection)
+                  </div>
+                  <div
+                    style="
+                      margin-bottom: 12px;
+                      padding: 8px;
+                      background: #e0f2fe;
+                      border-radius: 6px;
+                      border: 1px solid #bfdbfe;
+                    "
+                  >
+                    <label
+                      style="
+                        font-weight: 700;
+                        color: #1e40af;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                      "
+                    >
+                      <input
+                        type="checkbox"
+                        id="wv_entire_bihar"
+                        onchange="buildOutlookSentence('wv')"
+                        style="width: 16px; height: 16px"
+                        checked
+                      />
+                      संपूर्ण बिहार (Entire Bihar)
+                    </label>
+                  </div>
+                  <div class="ob-area-cols">
+                    <div>
+                      <div class="ob-area-col-label">Sectors (बहु-चयन)</div>
+                      <div class="ob-checkbox-list" id="wv_sectors"></div>
+                    </div>
+                    <div>
+                      <div class="ob-area-col-label">Districts (बहु-चयन)</div>
+                      <div
+                        class="ob-checkbox-list district-grid"
+                        id="wv_districts"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="ob-area-hint">
+                    ※ यदि "संपूर्ण बिहार" या कोई क्षेत्र चुना है, तो नीचे दिए गए
+                    'Region' का उपयोग उसके साथ मिलाकर किया जाएगा। (If "Entire
+                    Bihar" or any area is selected, the 'Region' below will be
+                    combined with it.)
+                  </div>
+                  <hr class="ob-divider" style="margin: 10px 0" />
+                  <div class="ob-region-row">
+                    <span class="ob-label" style="min-width: 60px"
+                      >Region:</span
+                    >
+                    <select
+                      class="ob-region-select"
+                      id="wv_region_base"
+                      onchange="buildOutlookSentence('wv')"
+                    >
+                      <option value="राज्य के अधिकांश" selected>
+                        राज्य के अधिकांश
+                      </option>
+                      <option value="राज्य के अनेक">राज्य के अनेक</option>
+                      <option value="राज्य के कुछ">राज्य के कुछ</option>
+                      <option value="राज्य के एक या दो">
+                        राज्य के एक या दो
+                      </option>
+                    </select>
+                    <select
+                      class="ob-suffix-select"
+                      id="wv_region_suffix"
+                      onchange="buildOutlookSentence('wv')"
+                    >
+                      <option value="स्थानों">स्थानों</option>
+                      <option value="क्षेत्र" selected>क्षेत्र</option>
+                      <option value="भागों">भागों</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="ob-row">
+                  <span class="ob-label">घटना:</span>
+                  <select class="ob-select" id="wv_condition">
+                    <option value="सामान्य से नीचे रहने की संभावना है।">
+                      सामान्य से नीचे (Below Normal)
+                    </option>
+                    <option value="सामान्य रहने की संभावना है।">
+                      सामान्य (Normal)
+                    </option>
+                    <option value="सामान्य से अधिक रहने की संभावना है।">
+                      सामान्य से अधिक (Above Normal)
+                    </option>
+                    <option value="नहीं होने की संभावना है।">
+                      नहीं होने की संभावना
+                    </option>
+                  </select>
+                </div>
+                <div class="ob-checkbox-row">
+                  <input
+                    type="checkbox"
+                    id="wv_secondary"
+                    onchange="toggleSecondary('wv')"
+                  />
+                  <label for="wv_secondary"
+                    >द्वितीयक भाग जोड़ें / Add Secondary Part (जबकि शेष... /
+                    While remaining...)</label
+                  >
+                </div>
+                <div
+                  id="wv_secondary_box"
+                  style="
+                    display: none;
+                    padding: 10px;
+                    background: #fffbeb;
+                    border-radius: 8px;
+                    margin-bottom: 10px;
+                    border: 1px solid #fde68a;
+                  "
+                >
+                  <div
+                    class="ob-section-label"
+                    style="margin-bottom: 8px; color: #92400e"
+                  >
+                    क्षेत्र 2 (Secondary Area)
+                  </div>
+                  <!-- Area Selector -->
+                  <div
+                    class="ob-area-block"
+                    style="margin-bottom: 8px; padding: 10px"
+                  >
+                    <div
+                      style="
+                        margin-bottom: 10px;
+                        padding: 6px;
+                        background: #fef3c7;
+                        border-radius: 6px;
+                      "
+                    >
+                      <label
+                        style="
+                          font-weight: 700;
+                          color: #92400e;
+                          cursor: pointer;
+                          display: flex;
+                          align-items: center;
+                          gap: 8px;
+                        "
+                      >
+                        <input
+                          type="checkbox"
+                          id="wv2_entire_bihar"
+                          onchange="buildOutlookSentence('wv')"
+                          style="width: 14px; height: 14px"
+                          checked
+                        />
+                        संपूर्ण बिहार (Entire Bihar)
+                      </label>
+                    </div>
+                    <div class="ob-area-cols">
+                      <div>
+                        <div class="ob-area-col-label">Sectors</div>
+                        <div class="ob-checkbox-list" id="wv2_sectors"></div>
+                      </div>
+                      <div>
+                        <div class="ob-area-col-label">Districts</div>
+                        <div
+                          class="ob-checkbox-list district-grid"
+                          id="wv2_districts"
+                        ></div>
+                      </div>
+                    </div>
+                    <div
+                      class="ob-region-row"
+                      style="margin-top: 10px; margin-bottom: 0"
+                    >
+                      <span class="ob-label" style="min-width: 60px"
+                        >Region:</span
+                      >
+                      <select
+                        class="ob-region-select"
+                        id="wv2_region_base"
+                        onchange="buildOutlookSentence('wv')"
+                      >
+                        <option value="राज्य के शेष" selected>
+                          राज्य के शेष
+                        </option>
+                        <option value="राज्य के अधिकांश">
+                          राज्य के अधिकांश
+                        </option>
+                        <option value="राज्य के अनेक">राज्य के अनेक</option>
+                        <option value="राज्य के कुछ">राज्य के कुछ</option>
+                        <option value="राज्य के एक या दो">
+                          राज्य के एक या दो
+                        </option>
+                      </select>
+                      <select
+                        class="ob-suffix-select"
+                        id="wv2_region_suffix"
+                        onchange="buildOutlookSentence('wv')"
+                      >
+                        <option value="भागों">भागों</option>
+                        <option value="स्थानों">स्थानों</option>
+                        <option value="क्षेत्र" selected>क्षेत्र</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="ob-row" style="margin-bottom: 0">
+                    <span class="ob-label">घटना 2:</span>
+                    <select
+                      class="ob-select"
+                      id="wv2_condition"
+                      onchange="buildOutlookSentence('wv')"
+                    >
+                      <option value="सामान्य से नीचे रहने की संभावना है।">
+                        सामान्य से नीचे (Below Normal)
+                      </option>
+                      <option value="सामान्य रहने की संभावना है।">
+                        सामान्य (Normal)
+                      </option>
+                      <option value="सामान्य से अधिक रहने की संभावना है।">
+                        सामान्य से अधिक (Above Normal)
+                      </option>
+                      <option value="नहीं होने की संभावना है।">
+                        नहीं होने की संभावना
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="ob-row">
+                  <button
+                    class="ob-btn-gen"
+                    onclick="buildOutlookSentence('wv')"
+                  >
+                    <i class="fas fa-magic"></i> वाक्य बनाएं / Generate Sentence
+                  </button>
+                </div>
+                <div class="ob-section-label">
+                  👁 पूर्वावलोकन / Preview (संपादन योग्य / Editable)
+                </div>
+                <textarea
+                  class="ob-preview-box"
+                  id="wv_preview"
+                  rows="2"
+                ></textarea>
+                <div class="ob-row" style="margin-top: 10px">
+                  <button
+                    class="ob-btn-add"
+                    onclick="appendToFinal('wv_preview', 'heatwaveOutlook')"
+                  >
+                    <i class="fas fa-plus"></i> अंतिम पाठ में जोड़ें / Add to
+                    Final Text
+                  </button>
+                  <button
+                    class="ob-btn-clear"
+                    onclick="clearFinal('heatwaveOutlook')"
+                  >
+                    <i class="fas fa-trash"></i> पाठ साफ़ करें / Clear Text
+                  </button>
+                </div>
+                <hr class="ob-divider" />
+                <div class="ob-section-label" id="wv_final_label">
+                  📄 अंतिम उष्ण लहर / शीतलहर दृष्टिकोण पाठ / Final Heat/Cold
+                  Wave Outlook Text (संपादन योग्य / Editable)
+                </div>
+                <textarea
+                  class="ob-final-box"
+                  id="heatwaveOutlook"
+                  placeholder="यहाँ वाक्य जोड़ते जाएं..."
+                ></textarea>
+                <div
+                  class="image-upload-btn"
+                  onclick="document.getElementById('heatwaveImg').click()"
+                  style="margin-top: 12px"
+                >
+                  <input
+                    type="file"
+                    id="heatwaveImg"
+                    accept="image/*"
+                    onchange="previewImage(this, 'heatwaveImgPreview')"
+                  />
+                  <span><i class="fas fa-image"></i> मानचित्र अपलोड करें</span>
+                </div>
+                <img
+                  id="heatwaveImgPreview"
+                  class="preview-image"
+                  style="display: none"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="content-card" id="signatureCard">
+            <h2 class="section-title">
+              <i class="fas fa-signature"></i> हस्ताक्षर अनुभाग
+            </h2>
+            <div class="signature-section">
+              <div class="signature-box">
+                <h4><i class="fas fa-user-edit"></i> तैयार करने वाले</h4>
+                <select class="form-select" id="preparedBy">
+                  <option value="">चुनें</option>
+                  <option value="Amit Kumar - Met-A">Amit Kumar – Met-A</option>
+                  <option value="Ravi Kumar - Met-B">Ravi Kumar – Met-B</option>
+                  <option value="Anil Kumar - Met-C">Anil Kumar – Met-C</option>
+                </select>
+              </div>
+              <div class="signature-box">
+                <h4>
+                  <i class="fas fa-user-check"></i> पूर्वानुमान जारी करने वाले
+                </h4>
+                <select class="form-select" id="issuedBy">
+                  <option value="">चुनें</option>
+                  <option value="Ashish Kumar - Scientist-D">
+                    Ashish Kumar – Scientist-D
+                  </option>
+                  <option value="Rajesh Kumar - Scientist-E">
+                    Rajesh Kumar – Scientist-E
+                  </option>
+                  <option value="Sunil Kumar - Scientist-F">
+                    Sunil Kumar – Scientist-F
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="export-section">
+              <button
+                class="btn"
+                style="
+                  background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+                  color: white;
+                  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+                "
+                onclick="openBulletinPreviewModal()"
+              >
+                <i class="fas fa-newspaper"></i> Bulletin Preview
+              </button>
+              <button class="btn btn-success" onclick="exportToPDF()">
+                <i class="fas fa-file-pdf"></i> PDF के रूप में निर्यात करें
+              </button>
+              <button class="btn btn-primary" onclick="exportToDOCX()">
+                <i class="fas fa-file-word"></i> DOCX के रूप में निर्यात करें
+              </button>
+            </div>
+
+            <!-- ══════════ BULLETIN PREVIEW MODAL ══════════ -->
+            <div
+              id="bulletinPreviewModal"
+              style="
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.75);
+                z-index: 9999;
+                overflow-y: auto;
+                padding: 20px;
+              "
+            >
+              <div
+                style="
+                  max-width: 900px;
+                  margin: 0 auto;
+                  background: #fff;
+                  border-radius: 16px;
+                  overflow: hidden;
+                  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+                "
+              >
+                <!-- Modal Header -->
+                <div
+                  style="
+                    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+                    padding: 18px 24px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                  "
+                >
+                  <h2 style="color: white; font-size: 1.3rem; margin: 0">
+                    <i class="fas fa-newspaper"></i> &nbsp;Bulletin Preview –
+                    मौसम बुलेटिन
+                  </h2>
+                  <div style="display: flex; gap: 10px">
+                    <button
+                      onclick="printBulletinPreview()"
+                      style="
+                        background: rgba(255, 255, 255, 0.2);
+                        border: 1px solid rgba(255, 255, 255, 0.4);
+                        color: white;
+                        padding: 8px 16px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-family: inherit;
+                        font-size: 0.9rem;
+                      "
+                    >
+                      <i class="fas fa-print"></i> Print
+                    </button>
+                    <button
+                      onclick="downloadBulletinPDF(this)"
+                      style="
+                        background: rgba(255, 255, 255, 0.2);
+                        border: 1px solid rgba(255, 255, 255, 0.4);
+                        color: white;
+                        padding: 8px 16px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-family: inherit;
+                        font-size: 0.9rem;
+                      "
+                    >
+                      <i class="fas fa-file-pdf"></i> Download PDF
+                    </button>
+                    <button
+                      onclick="closeBulletinPreviewModal()"
+                      style="
+                        background: rgba(255, 255, 255, 0.2);
+                        border: 1px solid rgba(255, 255, 255, 0.4);
+                        color: white;
+                        padding: 8px 16px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-family: inherit;
+                        font-size: 0.9rem;
+                      "
+                    >
+                      <i class="fas fa-times"></i> बंद करें
+                    </button>
+                  </div>
+                </div>
+                <!-- Printable Content -->
+                <div
+                  id="bulletinPrintArea"
+                  style="
+                    padding: 32px;
+                    font-family: &quot;Noto Sans Devanagari&quot;, sans-serif;
+                    color: #1a1a1a;
+                    background: #fff;
+                  "
+                >
+                  <!-- will be filled dynamically -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Global Data Storage
+      let weatherData = {
+        dailyMax: null,
+        dailyMin: null,
+        rainfall: null,
+        ftoData: null,
+        ptoData: null,
+      };
+      let charts = {};
+      let currentLang = "hi";
+      let stats = {};
+
+      const monthNames = {
+        hi: [
+          "जनवरी",
+          "फरवरी",
+          "मार्च",
+          "अप्रैल",
+          "मई",
+          "जून",
+          "जुलाई",
+          "अगस्त",
+          "सितंबर",
+          "अक्टूबर",
+          "नवंबर",
+          "दिसंबर",
+        ],
+        en: [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ],
+      };
+
+      const outlookTemplates = {
+        hi: {
+          rainfall: {
+            below: `{month}, {year} में बिहार राज्य के अधिकांश हिस्सों में सामान्य से कम वर्षा होने की संभावना है।`,
+            normal: `{month}, {year} में बिहार राज्य के अधिकांश हिस्सों में सामान्य वर्षा होने की संभावना है।`,
+            above: `{month}, {year} में बिहार राज्य के अधिकांश हिस्सों में सामान्य से अधिक वर्षा होने की संभावना है।`,
+          },
+          maxTemp: {
+            below: `{month}, {year} के दौरान राज्य के अधिकांश भागों में अधिकतम तापमान सामान्य से कम रहने की संभावना है।`,
+            normal: `{month}, {year} के दौरान राज्य के अधिकांश भागों में अधिकतम तापमान सामान्य रहने की संभावना है।`,
+            above: `{month}, {year} के दौरान राज्य के अधिकांश भागों में अधिकतम तापमान सामान्य से अधिक रहने की संभावना है।`,
+          },
+          minTemp: {
+            below: `{month}, {year} के दौरान राज्य के अधिकांश हिस्सों में न्यूनतम तापमान सामान्य से कम रहने की संभावना है।`,
+            normal: `{month}, {year} के दौरान राज्य के अधिकांश हिस्सों में न्यूनतम तापमान सामान्य रहने की संभावना है।`,
+            above: `{month}, {year} के दौरान राज्य के अधिकांश हिस्सों में न्यूनतम तापमान सामान्य से अधिक रहने की संभावना है।`,
+          },
+          wave: {
+            below: `{month}, {year} के दौरान राज्य में {waveType} की घटना सामान्य से कम रहने की संभावना है।`,
+            normal: `{month}, {year} के दौरान राज्य में {waveType} की घटना सामान्य रहने की संभावना है।`,
+            above: `{month}, {year} के दौरान राज्य में {waveType} की घटना सामान्य से अधिक रहने की संभावना है।`,
+          },
+        },
+      };
+
+      document.addEventListener("DOMContentLoaded", function () {
+        setupDragAndDrop();
+        updateDynamicContent();
+        ["rf", "rf2", "mt", "mt2", "mn", "mn2", "wv", "wv2"].forEach((p) =>
+          initAreaSelects(p),
+        );
+
+        ["rf", "mt", "mn", "wv"].forEach((p) => buildOutlookSentence(p));
+      });
+
+      function getCurrentMonthYear() {
+        const monthSelect = document.getElementById("monthSelect");
+        const yearSelect = document.getElementById("yearSelect");
+        const monthIndex = parseInt(monthSelect.value);
+        const year = yearSelect.value;
+        const monthName = monthNames[currentLang][monthIndex];
+        return { month: monthName, year: year, monthIndex: monthIndex };
+      }
+
+      function updateDynamicContent() {
+        const { month, year } = getCurrentMonthYear();
+
+        const rainfallTitle = document.getElementById("rainfallChartTitle");
+        if (rainfallTitle) {
+          rainfallTitle.textContent = `बिहार राज्य के विभिन्न जिलों का ${month} ${year} माह के संचयी वर्षा का चित्रण`;
+        }
+
+        updateOutlookPlaceholders();
+      }
+
+      function updateOutlookPlaceholders() {
+        /* handled by new builder */
+      }
+      function insertTemplate() {
+        /* replaced by new builder */
+      }
+
+      // ════════════════════════════════════════════════════════════
+      //  AREA DATA — Sectors & Districts
+      // ════════════════════════════════════════════════════════════
+      const BIHAR_SECTORS = [
+        { val: "तराई वाले क्षेत्रों", label: "Foothills (तराई वाले क्षेत्र)" },
+        { val: "उत्तरी बिहार", label: "North Bihar (उत्तरी बिहार)" },
+        { val: "दक्षिणी बिहार", label: "South Bihar (दक्षिणी बिहार)" },
+        { val: "पूर्वी बिहार", label: "East Bihar (पूर्वी बिहार)" },
+        { val: "पश्चिमी बिहार", label: "West Bihar (पश्चिमी बिहार)" },
+        { val: "उत्तर-पश्चिमी", label: "North-West (उत्तर-पश्चिम)" },
+        { val: "उत्तर-मध्य", label: "North-Central (उत्तर-मध्य)" },
+        { val: "उत्तर-पूर्वी", label: "North-East (उत्तर-पूर्व)" },
+        { val: "दक्षिण-पश्चिमी", label: "South-West (दक्षिण-पश्चिम)" },
+        { val: "दक्षिण-मध्य", label: "South-Central (दक्षिण-मध्य)" },
+        { val: "दक्षिण-पूर्वी", label: "South-East (दक्षिण-पूर्व)" },
+      ];
+
+      const BIHAR_DISTRICTS = [
+        "अररिया",
+        "अरवल",
+        "औरंगाबाद",
+        "बांका",
+        "बेगूसराय",
+        "भागलपुर",
+        "भोजपुर",
+        "बक्सर",
+        "दरभंगा",
+        "पूर्वी चंपारण",
+        "गया",
+        "गोपालगंज",
+        "जमुई",
+        "जहानाबाद",
+        "कैमूर",
+        "कटिहार",
+        "खगड़िया",
+        "किशनगंज",
+        "लखीसराय",
+        "मधेपुरा",
+        "मधुबनी",
+        "मुंगेर",
+        "मुज़फ्फरपुर",
+        "नालंदा",
+        "नवादा",
+        "पटना",
+        "पूर्णिया",
+        "रोहतास",
+        "सहरसा",
+        "समस्तीपुर",
+        "सारण",
+        "शेखपुरा",
+        "शिवहर",
+        "सीतामढ़ी",
+        "सीवान",
+        "सुपौल",
+        "वैशाली",
+        "पश्चिमी चंपारण",
+      ];
+
+      // Populate both multi-selects for a given prefix
+      function initAreaSelects(prefix) {
+        const secEl = document.getElementById(prefix + "_sectors");
+        const disEl = document.getElementById(prefix + "_districts");
+        if (!secEl || !disEl) return;
+        const mainPrefix = prefix.substring(0, 2);
+        secEl.innerHTML = BIHAR_SECTORS.map(
+          (s) =>
+            `<label><input type="checkbox" value="${s.val}" onchange="buildOutlookSentence('${mainPrefix}')"> ${s.label}</label>`,
+        ).join("");
+        disEl.innerHTML = BIHAR_DISTRICTS.map(
+          (d) =>
+            `<label><input type="checkbox" value="${d}" onchange="buildOutlookSentence('${mainPrefix}')"> ${d}</label>`,
+        ).join("");
+        secEl.addEventListener("change", () =>
+          buildOutlookSentence(mainPrefix),
+        );
+        disEl.addEventListener("change", () =>
+          buildOutlookSentence(mainPrefix),
+        );
+      }
+
+      // Get selected area text from multi-selects + region dropdowns
+      function getAreaText(prefix) {
+        const entireBihar = document.getElementById(
+          prefix + "_entire_bihar",
+        )?.checked;
+        const secEl = document.getElementById(prefix + "_sectors");
+        const disEl = document.getElementById(prefix + "_districts");
+        const regEl = document.getElementById(prefix + "_region_base");
+        const sufEl = document.getElementById(prefix + "_region_suffix");
+
+        const selSec = secEl
+          ? Array.from(secEl.querySelectorAll("input:checked")).map(
+              (cb) => cb.value,
+            )
+          : [];
+        const selDis = disEl
+          ? Array.from(disEl.querySelectorAll("input:checked")).map(
+              (cb) => cb.value,
+            )
+          : [];
+        const regVal = regEl ? regEl.value : "";
+        const sufVal = sufEl ? sufEl.value : "स्थानों";
+
+        let modifier = "";
+        if (regVal) {
+          modifier = regVal.replace("राज्य के ", "").trim();
+        }
+
+        if (entireBihar) {
+          if (modifier) {
+            return "संपूर्ण बिहार के " + modifier + " " + sufVal + " में";
+          }
+          return "संपूर्ण बिहार में";
+        }
+
+        if (selSec.length > 0 || selDis.length > 0) {
+          let areaStr = "";
+
+          const formatList = (list) => {
+            if (list.length === 0) return "";
+            if (list.length === 1) return list[0];
+            const arr = [...list];
+            const last = arr.pop();
+            return arr.join(", ") + " एवं " + last;
+          };
+
+          const secStr = formatList(selSec);
+          const disStr = formatList(selDis);
+
+          if (secStr && disStr) {
+            areaStr = secStr + " तथा " + disStr;
+          } else {
+            areaStr = secStr || disStr;
+          }
+          if (modifier) {
+            return areaStr + " के " + modifier + " " + sufVal + " में";
+          }
+          return areaStr + " " + sufVal + " में";
+        }
+
+        if (regVal) {
+          return regVal + " " + sufVal + " में";
+        }
+
+        return "बिहार में";
+      }
+
+      // ════════════════════════════════════════════════════════════
+      //  OUTLOOK BUILDER FUNCTIONS
+      // ════════════════════════════════════════════════════════════
+
+      // Show/hide "सामान्य मान" input when checkbox is ticked
+      document.addEventListener("DOMContentLoaded", function () {
+        ["rf", "mt", "mn"].forEach((p) => {
+          const cb = document.getElementById(p + "_show_normal");
+          const inp = document.getElementById(p + "_normal_val");
+          if (cb && inp) {
+            cb.addEventListener("change", () => {
+              inp.style.display = cb.checked ? "inline-block" : "none";
+              buildOutlookSentence(p);
+            });
+          }
+        });
+        const mnProbCb = document.getElementById("mn_prob");
+        const mnProbInp = document.getElementById("mn_prob_val");
+        if (mnProbCb && mnProbInp) {
+          mnProbCb.addEventListener("change", () => {
+            mnProbInp.style.display = mnProbCb.checked
+              ? "inline-block"
+              : "none";
+            buildOutlookSentence("mn");
+          });
+        }
+        // auto-build previews when dropdowns change
+        [
+          "rf_region_base",
+          "rf_region_suffix",
+          "rf_forecast",
+          "rf2_region_base",
+          "rf2_region_suffix",
+          "rf2_forecast",
+          "mt_region_base",
+          "mt_region_suffix",
+          "mt_condition",
+          "mt2_region_base",
+          "mt2_region_suffix",
+          "mt2_condition",
+          "mn_region_base",
+          "mn_region_suffix",
+          "mn_condition",
+          "mn2_region_base",
+          "mn2_region_suffix",
+          "mn2_condition",
+          "wv_region_base",
+          "wv_region_suffix",
+          "wv_condition",
+          "wv2_region_base",
+          "wv2_region_suffix",
+          "wv2_condition",
+        ].forEach((id) => {
+          const el = document.getElementById(id);
+          if (el)
+            el.addEventListener("change", () => {
+              const p = id.substring(0, 2);
+              buildOutlookSentence(p);
+            });
+        });
+      });
+
+      function toggleSecondary(prefix) {
+        const cb = document.getElementById(prefix + "_secondary");
+        const box = document.getElementById(prefix + "_secondary_box");
+        if (box) box.style.display = cb && cb.checked ? "block" : "none";
+        buildOutlookSentence(prefix);
+      }
+
+      function buildOutlookSentence(prefix) {
+        const { month, year } = getCurrentMonthYear();
+        let sentence = "";
+        const region1 = getAreaText(prefix);
+        const secondary = document.getElementById(
+          prefix + "_secondary",
+        )?.checked;
+        const region2 = secondary ? getAreaText(prefix + "2") : "";
+
+        if (prefix === "rf") {
+          const forecast = document.getElementById("rf_forecast").value;
+          const showNorm = document.getElementById("rf_show_normal").checked;
+          const normVal = document.getElementById("rf_normal_val").value.trim();
+
+          sentence = `${month}, ${year} में ${region1} ${forecast.replace("।", "")}`;
+          if (secondary) {
+            const f2 = document.getElementById("rf2_forecast").value;
+            sentence += ` जबकि ${region2} ${f2.replace("।", "")}`;
+          }
+          sentence += "।";
+
+          if (showNorm && normVal) {
+            sentence =
+              sentence.replace("।", "") +
+              ` (${month} माह का सामान्य वर्षापात ${normVal} है)।`;
+          }
+        } else if (prefix === "mt") {
+          const condition = document.getElementById("mt_condition").value;
+          const showNorm = document.getElementById("mt_show_normal").checked;
+          const normVal = document.getElementById("mt_normal_val").value.trim();
+
+          sentence = `${month}, ${year} के दौरान ${region1} अधिकतम तापमान ${condition.replace("।", "")}`;
+          if (secondary) {
+            const c2 = document.getElementById("mt2_condition").value;
+            sentence += ` जबकि ${region2} अधिकतम तापमान ${c2.replace("।", "")}`;
+          }
+          sentence += "।";
+
+          if (showNorm && normVal) {
+            sentence =
+              sentence.replace("।", "") +
+              ` (सामान्य अधिकतम तापमान ${normVal} है)।`;
+          }
+        } else if (prefix === "mn") {
+          const condition = document.getElementById("mn_condition").value;
+          const showProb = document.getElementById("mn_prob").checked;
+          const probVal = document.getElementById("mn_prob_val").value.trim();
+          const showNorm = document.getElementById("mn_show_normal").checked;
+          const normVal = document.getElementById("mn_normal_val").value.trim();
+
+          sentence = `${month}, ${year} के दौरान ${region1} न्यूनतम तापमान ${condition.replace("।", "")}`;
+          if (secondary) {
+            const c2 = document.getElementById("mn2_condition").value;
+            sentence += ` जबकि ${region2} न्यूनतम तापमान ${c2.replace("।", "")}`;
+          }
+          sentence += "।";
+
+          if (!secondary && showProb && probVal) {
+            sentence = sentence.replace("।", "") + ` (${probVal} संभावना)।`;
+          }
+          if (showNorm && normVal) {
+            sentence =
+              sentence.replace("।", "") +
+              ` (सामान्य न्यूनतम तापमान ${normVal} है)।`;
+          }
+        } else if (prefix === "wv") {
+          const condition = document.getElementById("wv_condition").value;
+          const waveSelect = document.getElementById("waveType");
+          const waveName =
+            waveSelect && waveSelect.value === "coldwave"
+              ? "शीतलहर"
+              : "उष्ण लहर";
+          sentence = `${month}, ${year} के दौरान ${region1} ${waveName} की घटना ${condition.replace("।", "")}`;
+          if (secondary) {
+            const c2 = document.getElementById("wv2_condition").value;
+            sentence += ` जबकि ${region2} ${waveName} की घटना ${c2.replace("।", "")}`;
+          }
+          sentence += "।";
+        }
+
+        // Clean up any double full stops accidentally created
+        sentence = sentence.replace("।।", "।");
+
+        const preview = document.getElementById(prefix + "_preview");
+        if (preview) preview.value = sentence;
+      }
+
+      function appendToFinal(previewId, finalId) {
+        const preview = document.getElementById(previewId);
+        const final = document.getElementById(finalId);
+        if (!preview || !final || !preview.value.trim()) return;
+        final.value = final.value
+          ? final.value + "\n\n" + preview.value.trim()
+          : preview.value.trim();
+        // Clear preview after adding
+        preview.value = "";
+      }
+
+      function clearFinal(finalId) {
+        const el = document.getElementById(finalId);
+        if (el) el.value = "";
+      }
+
+      function updateWaveHeader() {
+        buildOutlookSentence("wv");
+      }
+
+      function switchTab(tab) {
+        document
+          .querySelectorAll(".tab-btn")
+          .forEach((btn) => btn.classList.remove("active"));
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((content) => content.classList.remove("active"));
+        if (tab === "excel") {
+          document
+            .querySelector(".tab-btn:nth-child(1)")
+            .classList.add("active");
+          document.getElementById("excelTab").classList.add("active");
+        } else {
+          document
+            .querySelector(".tab-btn:nth-child(2)")
+            .classList.add("active");
+          document.getElementById("csvTab").classList.add("active");
+        }
+      }
+
+      function switchFtoPtoTab(tab) {
+        document
+          .querySelectorAll(".fto-pto-tab")
+          .forEach((btn) => btn.classList.remove("active"));
+        document
+          .querySelectorAll(".fto-pto-content")
+          .forEach((content) => content.classList.remove("active"));
+        if (tab === "fto") {
+          document
+            .querySelector(".fto-pto-tab:nth-child(1)")
+            .classList.add("active");
+          document.getElementById("ftoContent").classList.add("active");
+        } else {
+          document
+            .querySelector(".fto-pto-tab:nth-child(2)")
+            .classList.add("active");
+          document.getElementById("ptoContent").classList.add("active");
+        }
+      }
+
+      function setupDragAndDrop() {
+        const uploadArea = document.getElementById("excelUploadArea");
+        if (!uploadArea) return;
+        uploadArea.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          uploadArea.classList.add("dragover");
+        });
+        uploadArea.addEventListener("dragleave", () =>
+          uploadArea.classList.remove("dragover"),
+        );
+        uploadArea.addEventListener("drop", (e) => {
+          e.preventDefault();
+          uploadArea.classList.remove("dragover");
+          if (e.dataTransfer.files.length > 0) {
+            document.getElementById("excelFile").files = e.dataTransfer.files;
+            handleExcelUpload(document.getElementById("excelFile"));
+          }
+        });
+      }
+
+      function handleExcelUpload(input) {
+        const file = input.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: "array" });
+            const availableSheets = workbook.SheetNames;
+
+            if (availableSheets.includes("DAILY MAX"))
+              weatherData.dailyMax = XLSX.utils.sheet_to_json(
+                workbook.Sheets["DAILY MAX"],
+                { header: 1 },
+              );
+            if (availableSheets.includes("daily min"))
+              weatherData.dailyMin = XLSX.utils.sheet_to_json(
+                workbook.Sheets["daily min"],
+                { header: 1 },
+              );
+            if (availableSheets.includes("RAINFALL"))
+              weatherData.rainfall = XLSX.utils.sheet_to_json(
+                workbook.Sheets["RAINFALL"],
+                { header: 1 },
+              );
+            if (availableSheets.includes("FTO"))
+              weatherData.ftoData = XLSX.utils.sheet_to_json(
+                workbook.Sheets["FTO"],
+                { header: 1 },
+              );
+            if (availableSheets.includes("PTO"))
+              weatherData.ptoData = XLSX.utils.sheet_to_json(
+                workbook.Sheets["PTO"],
+                { header: 1 },
+              );
+
+            showStatus("success", `फाइल सफलतापूर्वक अपलोड हुई: ${file.name}`);
+            showDataPreview();
+          } catch (error) {
+            showStatus("error", "फाइल पढ़ने में त्रुटि: " + error.message);
+          }
+        };
+        reader.readAsArrayBuffer(file);
+      }
+
+      function handleCsvUpload(input, type) {
+        const file = input.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const csv = e.target.result;
+          const lines = csv.split("\n");
+          const headers = lines[0].split(",");
+          const data = [];
+          for (let i = 1; i < lines.length; i++) {
+            if (lines[i].trim()) data.push(lines[i].split(","));
+          }
+          data.unshift(headers);
+          if (type === "max") {
+            weatherData.dailyMax = data;
+            document.getElementById("maxCsvBox").classList.add("uploaded");
+          } else if (type === "min") {
+            weatherData.dailyMin = data;
+            document.getElementById("minCsvBox").classList.add("uploaded");
+          } else if (type === "rain") {
+            weatherData.rainfall = data;
+            document.getElementById("rainCsvBox").classList.add("uploaded");
+          }
+          showStatus("success", `${type.toUpperCase()} CSV अपलोड हुआ`);
+        };
+        reader.readAsText(file);
+      }
+
+      function showDataPreview() {
+        const previewCard = document.getElementById("previewCard");
+        const previewDiv = document.getElementById("dataPreview");
+        if (!weatherData.dailyMax) return;
+        let html = '<table class="data-table"><thead><tr>';
+        const headers = weatherData.dailyMax[0];
+        headers.forEach((header) => (html += `<th>${header}</th>`));
+        html += "</tr></thead><tbody>";
+        for (let i = 1; i < Math.min(6, weatherData.dailyMax.length); i++) {
+          html += "<tr>";
+          weatherData.dailyMax[i].forEach(
+            (cell) => (html += `<td>${cell !== undefined ? cell : ""}</td>`),
+          );
+          html += "</tr>";
+        }
+        html += "</tbody></table>";
+        previewDiv.innerHTML = html;
+        previewCard.style.display = "block";
+      }
+
+      function showStatus(type, message) {
+        const statusDiv = document.getElementById("uploadStatus");
+        statusDiv.className = `status-message status-${type}`;
+        statusDiv.innerHTML = `<i class="fas fa-${type === "success" ? "check-circle" : type === "error" ? "exclamation-circle" : "info-circle"}"></i> ${message}`;
+        statusDiv.style.display = "flex";
+        setTimeout(() => (statusDiv.style.display = "none"), 5000);
+      }
+
+      function generateAnalysis() {
+        if (
+          !weatherData.dailyMax ||
+          !weatherData.dailyMin ||
+          !weatherData.rainfall
+        ) {
+          showStatus("error", "कृपया पहले डेटा अपलोड करें");
+          return;
+        }
+        const spinner = document.getElementById("analysisSpinner");
+        const text = document.getElementById("analysisText");
+        spinner.style.display = "block";
+        text.innerHTML = "विश्लेषण हो रहा है...";
+        const btn = document.querySelector(".btn-primary");
+        btn.disabled = true;
+        btn.style.opacity = "0.7";
+
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            try {
+              performAnalysis();
+              showStatus("success", "विश्लेषण सफलतापूर्वक पूरा हुआ!");
+            } catch (error) {
+              showStatus("error", "विश्लेषण में त्रुटि: " + error.message);
+            } finally {
+              spinner.style.display = "none";
+              text.innerHTML =
+                '<i class="fas fa-calculator"></i> विश्लेषण करें';
+              btn.disabled = false;
+              btn.style.opacity = "1";
+            }
+          }, 50);
+        });
+      }
+
+      function performAnalysis() {
+        const { month, year } = getCurrentMonthYear();
+        const maxData = parseWeatherDataOptimized(weatherData.dailyMax);
+        const minData = parseWeatherDataOptimized(weatherData.dailyMin);
+        const rainData = parseWeatherDataOptimized(weatherData.rainfall);
+        stats = calculateStatisticsOptimized(maxData, minData, rainData);
+
+        requestAnimationFrame(() => {
+          displayStats(stats, month, year);
+          generateReportText(stats, month, year);
+        });
+        requestAnimationFrame(() =>
+          createChartsOptimized(rainData, maxData, minData, month, year),
+        );
+
+        if (weatherData.ftoData) processFtoPtoData("fto");
+        if (weatherData.ptoData) processFtoPtoData("pto");
+
+        ["analysisCard", "chartsCard", "outlookCard", "signatureCard"].forEach(
+          (cardId, index) => {
+            setTimeout(() => {
+              const card = document.getElementById(cardId);
+              if (card) {
+                card.style.display = "block";
+                card.style.opacity = "0";
+                card.style.transform = "translateY(20px)";
+                card.style.transition = "all 0.3s ease";
+                requestAnimationFrame(() => {
+                  card.style.opacity = "1";
+                  card.style.transform = "translateY(0)";
+                });
+              }
+            }, index * 100);
+          },
+        );
+
+        setTimeout(
+          () =>
+            document
+              .getElementById("analysisCard")
+              .scrollIntoView({ behavior: "smooth" }),
+          400,
+        );
+      }
+
+      function processFtoPtoData(type) {
+        const data = type === "fto" ? weatherData.ftoData : weatherData.ptoData;
+        if (!data || data.length < 2) return;
+        const section = document.getElementById("ftoPtoSection");
+        if (section) section.style.display = "block";
+        const tables = parseFtoPtoTables(data);
+        displayFtoPtoTables(tables, type);
+        createFtoPtoCharts(tables, type);
+      }
+
+      // ─── FTO / PTO PARSING ────────────────────────────────────────────────────
+      // Excel layout: two tables sit SIDE-BY-SIDE in the same row-block.
+      // Row 0  : [NaN, "MEAN Tmax OF MONTH …", NaN…, NaN, "MEAN Tmin OF MONTH …", …]
+      // Row 1  : [NaN, NaN, PATNA, GAYA, …,  NaN, NaN, PATNA, GAYA, …]
+      // Row 2-6: [NaN, 2022, 34.5, 33.9, …,  NaN, 2022, 18.6, 16.3, …]
+      // Rows 24-30 : LOWEST Tmin (left) + HIGHEST Tmax (right)
+      // Rows 55-61 : TOTAL RAINFALL (left only, no right table)
+      //
+      // Strategy:
+      //  1. Scan every cell in every row for a keyword.
+      //  2. Record (titleRow, titleCol) for each hit.
+      //  3. Header row = titleRow + 1 ; data rows = titleRow + 2 … + 6
+      //  4. Year is the first numeric value in [titleCol .. titleCol+2]
+      //     Station values start right after the year cell.
+
+      function parseFtoPtoTables(rawData) {
+        const KEYWORDS = [
+          "MEAN Tmax OF MONTH",
+          "MEAN Tmin OF MONTH",
+          "LOWEST Tmin OF MONTH",
+          "HIGHEST Tmax OF MONTH",
+          "TOTAL RAINFALL IN MONTH",
+        ];
+
+        // helper: safely get trimmed string from cell
+        function cellStr(row, c) {
+          if (!row || row[c] === undefined || row[c] === null) return "";
+          return String(row[c]).trim();
+        }
+        // helper: is this cell a year 2000-2100?
+        function isYear(s) {
+          const n = parseInt(s);
+          return !isNaN(n) && n >= 2000 && n <= 2100;
+        }
+
+        const found = []; // {title, titleRow, titleCol}
+
+        for (let r = 0; r < rawData.length; r++) {
+          const row = rawData[r];
+          if (!row) continue;
+          for (let c = 0; c < row.length; c++) {
+            const cv = cellStr(row, c);
+            if (!cv) continue;
+            const kw = KEYWORDS.find((k) => cv.includes(k));
+            if (kw) {
+              // avoid duplicate entries for same title at same position
+              const alreadyFound = found.some(
+                (f) => f.titleRow === r && f.titleCol === c,
+              );
+              if (!alreadyFound)
+                found.push({ title: cv, kw, titleRow: r, titleCol: c });
+            }
+          }
+        }
+
+        const tables = {};
+
+        found.forEach(({ title, kw, titleRow, titleCol }) => {
+          const headerRow = rawData[titleRow + 1];
+          if (!headerRow) return;
+
+          // --- collect station names ---
+          // Stations are in headerRow starting from titleCol+1 or titleCol+2
+          // They are non-empty strings that are NOT years
+          const stations = [];
+          let stationStartCol = titleCol + 1;
+          // skip blank cells right after titleCol
+          while (
+            stationStartCol < headerRow.length &&
+            !cellStr(headerRow, stationStartCol)
+          ) {
+            stationStartCol++;
+          }
+          for (let c = stationStartCol; c < headerRow.length; c++) {
+            const v = cellStr(headerRow, c);
+            if (!v) break; // stop at first blank
+            if (isYear(v)) break; // stop if year appears (another table boundary)
+            stations.push(v);
+          }
+          if (stations.length === 0) return;
+
+          // --- collect year rows ---
+          const yearRows = [];
+          for (
+            let r = titleRow + 2;
+            r < rawData.length && yearRows.length < 5;
+            r++
+          ) {
+            const row = rawData[r];
+            if (!row) continue;
+
+            // find year cell: search titleCol to titleCol+3
+            let yearCol = -1;
+            for (
+              let c = titleCol;
+              c <= Math.min(titleCol + 3, row.length - 1);
+              c++
+            ) {
+              if (isYear(cellStr(row, c))) {
+                yearCol = c;
+                break;
+              }
+            }
+            if (yearCol === -1) continue;
+
+            const yr = parseInt(cellStr(row, yearCol));
+            // values start right after year cell
+            const valStartCol = yearCol + 1;
+            const values = stations.map((_, si) => {
+              const raw = row[valStartCol + si];
+              if (
+                raw === undefined ||
+                raw === null ||
+                String(raw).trim() === ""
+              )
+                return null;
+              const pv = parseFloat(raw);
+              return isNaN(pv) ? null : parseFloat(pv.toFixed(2));
+            });
+            yearRows.push({ year: yr, values });
+          }
+
+          if (yearRows.length > 0) {
+            tables[title] = { title, kw, stations, yearRows };
+          }
+        });
+
+        return tables;
+      }
+
+      // ─── DISPLAY: for each table → show the data table THEN its bar chart ──
+      function displayFtoPtoTables(tables, type) {
+        /* intentionally empty – rendering merged below */
+      }
+      function createFtoPtoCharts(tables, type) {
+        // Render into a SINGLE container: table first, then chart, for all 5 tables
+        const wrapperId = type === "fto" ? "ftoTables" : "ptoTables";
+        // Also clear the separate charts div
+        const chartsDiv = document.getElementById(
+          type === "fto" ? "ftoCharts" : "ptoCharts",
+        );
+        if (chartsDiv) chartsDiv.innerHTML = "";
+
+        const wrapper = document.getElementById(wrapperId);
+        if (!wrapper) return;
+
+        const { month, year } = getCurrentMonthYear();
+        const yr0 = parseInt(year);
+        const yearRange = `(${yr0 - 4}-${yr0})`;
+
+        const ORDER = [
+          "MEAN Tmax OF MONTH",
+          "MEAN Tmin OF MONTH",
+          "LOWEST Tmin OF MONTH",
+          "HIGHEST Tmax OF MONTH",
+          "TOTAL RAINFALL IN MONTH",
+        ];
+
+        // build chart IDs in order so setTimeout can find them
+        const chartMeta = []; // {chartId, tbl}
+
+        let html = "";
+        ORDER.forEach((kw, idx) => {
+          // match by keyword
+          const tbl = Object.values(tables).find(
+            (t) => t.kw && t.kw.includes(kw.split(" OF")[0]),
+          );
+          if (!tbl) return;
+
+          const tableTitle = kw + " " + month.toUpperCase() + " " + yearRange;
+          const isRain = kw.includes("RAINFALL");
+          const chartTitle =
+            "5 YEARS COMPARISON OF " +
+            kw.replace(" OF MONTH", "") +
+            " " +
+            yearRange;
+          const chartId = `${type}_chart_${idx}`;
+          chartMeta.push({ chartId, tbl });
+
+          // --- data table ---
+          html += `
+          <div class="chart-container" style="margin-bottom:8px;">
+            <h4 class="chart-title" style="font-size:1rem;">${tableTitle}</h4>
+            <div class="data-table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th style="background:#1e3a8a;">वर्ष</th>
+                    ${tbl.stations.map((s) => `<th style="background:#1e3a8a;">${s}</th>`).join("")}
+                  </tr>
+                </thead>
+                <tbody>
+                  ${tbl.yearRows
+                    .map(
+                      (yr) => `
+                  <tr>
+                    <td><strong>${yr.year}</strong></td>
+                    ${yr.values.map((v) => `<td>${v !== null ? v.toFixed(1) : "-"}</td>`).join("")}
+                  </tr>`,
+                    )
+                    .join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- bar chart directly below this table -->
+          <div class="chart-container" style="margin-bottom:30px;">
+            <h4 class="chart-title" style="font-size:0.95rem;">${chartTitle}</h4>
+            <div class="chart-wrapper" style="height:320px;">
+              <canvas id="${chartId}"></canvas>
+            </div>
+            <div class="chart-actions">
+              <button class="btn btn-secondary btn-small" onclick="downloadChart('${chartId}')">
+                <i class="fas fa-download"></i> PNG डाउनलोड
+              </button>
+            </div>
+          </div>`;
+        });
+
+        wrapper.innerHTML = html;
+
+        // draw charts after DOM is ready
+        setTimeout(() => {
+          chartMeta.forEach(({ chartId, tbl }) => {
+            const canvas = document.getElementById(chartId);
+            if (!canvas) return;
+            const ctx = canvas.getContext("2d");
+            const isRain = tbl.kw && tbl.kw.includes("RAINFALL");
+
+            // X-axis = stations, grouped bars per year
+            const stationLabels = tbl.stations;
+            const yearList = tbl.yearRows.map((r) => String(r.year));
+            const colors = [
+              "#ef4444",
+              "#f59e0b",
+              "#10b981",
+              "#3b82f6",
+              "#8b5cf6",
+              "#ec4899",
+              "#14b8a6",
+              "#f97316",
+            ];
+
+            const datasets = tbl.yearRows.map((yr, yi) => ({
+              label: String(yr.year),
+              data: yr.values.map((v) => (v !== null ? v : 0)),
+              backgroundColor: colors[yi % colors.length] + "bb",
+              borderColor: colors[yi % colors.length],
+              borderWidth: 1,
+            }));
+
+            if (charts[chartId]) charts[chartId].destroy();
+            charts[chartId] = new Chart(ctx, {
+              type: "bar",
+              data: { labels: stationLabels, datasets },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: {
+                    display: true,
+                    position: "bottom",
+                    labels: { font: { size: 11 } },
+                  },
+                  title: { display: false },
+                },
+                scales: {
+                  x: {
+                    title: {
+                      display: true,
+                      text: type.toUpperCase() + " STATION",
+                    },
+                    ticks: { font: { size: 10 } },
+                  },
+                  y: {
+                    beginAtZero: isRain,
+                    title: {
+                      display: true,
+                      text: isRain
+                        ? "Rainfall Amount in MM"
+                        : "Temperature (°C)",
+                    },
+                  },
+                },
+              },
+            });
+          });
+        }, 150);
+      }
+
+      function parseWeatherDataOptimized(data) {
+        if (!data || data.length < 2) return [];
+        const headers = data[0];
+        const result = [];
+        const headerLen = headers.length;
+        const dataLength = data.length;
+        for (let i = 1; i < dataLength; i++) {
+          const row = data[i];
+          if (!row || !row[0]) continue;
+          const obj = { station: row[0] };
+          let val;
+          for (let j = 1; j < headerLen; j++) {
+            val = parseFloat(row[j]);
+            obj[headers[j]] = isNaN(val) ? 0 : val;
+          }
+          result.push(obj);
+        }
+        return result;
+      }
+
+      function calculateStatisticsOptimized(maxData, minData, rainData) {
+        const stats = {
+          highestAvgMax: { value: -Infinity, station: "" },
+          highestSingleMax: { value: -Infinity, station: "" },
+          lowestAvgMin: { value: Infinity, station: "" },
+          lowestSingleMin: { value: Infinity, station: "" },
+          patna: { max: 0, min: 0, avgMax: 0, avgMin: 0 },
+          totalRainfall: 0,
+          stationRainfall: [],
+        };
+        let station, values, sum, max, min, avg, val;
+        let len = maxData.length;
+        for (let i = 0; i < len; i++) {
+          station = maxData[i];
+          const stationName = station.station;
+          values = [];
+          sum = 0;
+          max = -Infinity;
+          for (let key in station) {
+            if (key === "station") continue;
+            val = station[key];
+            if (val && !isNaN(val) && val !== 0) {
+              values.push(val);
+              sum += val;
+              if (val > max) max = val;
+            }
+          }
+          if (values.length === 0) continue;
+          avg = sum / values.length;
+          if (avg > stats.highestAvgMax.value)
+            stats.highestAvgMax = {
+              value: avg.toFixed(1),
+              station: stationName,
+            };
+          if (max > stats.highestSingleMax.value)
+            stats.highestSingleMax = {
+              value: max.toFixed(1),
+              station: stationName,
+            };
+          if (stationName.toUpperCase() === "PATNA") {
+            stats.patna.avgMax = avg.toFixed(1);
+            stats.patna.max = max.toFixed(1);
+          }
+        }
+        len = minData.length;
+        for (let i = 0; i < len; i++) {
+          station = minData[i];
+          const stationName = station.station;
+          values = [];
+          sum = 0;
+          min = Infinity;
+          for (let key in station) {
+            if (key === "station") continue;
+            val = station[key];
+            if (val && !isNaN(val) && val !== 0) {
+              values.push(val);
+              sum += val;
+              if (val < min) min = val;
+            }
+          }
+          if (values.length === 0) continue;
+          avg = sum / values.length;
+          if (avg < stats.lowestAvgMin.value)
+            stats.lowestAvgMin = {
+              value: avg.toFixed(1),
+              station: stationName,
+            };
+          if (min < stats.lowestSingleMin.value)
+            stats.lowestSingleMin = {
+              value: min.toFixed(1),
+              station: stationName,
+            };
+          if (stationName.toUpperCase() === "PATNA") {
+            stats.patna.avgMin = avg.toFixed(1);
+            stats.patna.min = min.toFixed(1);
+          }
+        }
+        len = rainData.length;
+        for (let i = 0; i < len; i++) {
+          station = rainData[i];
+          const stationName = station.station;
+          let total = 0;
+          for (let key in station) {
+            if (key === "station") continue;
+            val = parseFloat(station[key]);
+            if (!isNaN(val)) total += val;
+          }
+          stats.totalRainfall += total;
+          stats.stationRainfall.push({
+            station: stationName,
+            rainfall: total.toFixed(1),
+          });
+        }
+        stats.totalRainfall = stats.totalRainfall.toFixed(1);
+        return stats;
+      }
+
+      function displayStats(stats, month, year) {
+        const grid = document.getElementById("analysisGrid");
+        if (!grid) return;
+        grid.innerHTML = `
+          <div class="stat-card"><div class="stat-label">सर्वाधिक औसत अधिकतम तापमान</div><div class="stat-value">${stats.highestAvgMax.value}°C</div><div class="stat-station">${stats.highestAvgMax.station}</div></div>
+          <div class="stat-card"><div class="stat-label">सर्वाधिक एकल दिन अधिकतम तापमान</div><div class="stat-value">${stats.highestSingleMax.value}°C</div><div class="stat-station">${stats.highestSingleMax.station}</div></div>
+          <div class="stat-card"><div class="stat-label">सबसे कम औसत न्यूनतम तापमान</div><div class="stat-value">${stats.lowestAvgMin.value}°C</div><div class="stat-station">${stats.lowestAvgMin.station}</div></div>
+          <div class="stat-card"><div class="stat-label">सबसे कम एकल दिन न्यूनतम तापमान</div><div class="stat-value">${stats.lowestSingleMin.value}°C</div><div class="stat-station">${stats.lowestSingleMin.station}</div></div>
+          <div class="stat-card"><div class="stat-label">पटना औसत अधिकतम/न्यूनतम</div><div class="stat-value">${stats.patna.avgMax}°C / ${stats.patna.avgMin}°C</div><div class="stat-station">पटना</div></div>
+          <div class="stat-card"><div class="stat-label">कुल मासिक वर्षा</div><div class="stat-value">${stats.totalRainfall} mm</div><div class="stat-station">सभी केंद्र</div></div>
+        `;
+      }
+
+      function generateReportText(stats, month, year) {
+        const reportEl = document.getElementById("analysisReport");
+        if (!reportEl) return;
+        reportEl.value = `बिहार राज्य का मौसम विश्लेषण: ${month} ${year} मासिक पूर्वानुमान
+
+प्रदेश में प्रतिस्थापित मौसम विज्ञान केंद्र के विभिन्न वेधशालाओं के प्राप्त आंकड़ों के आधार पर ${month} ${year} महीने के मौसम का विश्लेषण एवं रिपोर्ट :-
+
+1. सर्वाधिक औसत अधिकतम तापमान
+${month} ${year} में प्रदेश का सर्वाधिक औसत अधिकतम तापमान ${stats.highestAvgMax.value}°C दर्ज किया गया, जो ${stats.highestAvgMax.station} में रिकॉर्ड हुआ।
+
+2. सर्वाधिक अधिकतम तापमान (एकल दिन)
+${stats.highestSingleMax.value}°C का उच्चतम तापमान ${month} ${year} में ${stats.highestSingleMax.station} में दर्ज किया गया, जो महीने का सर्वाधिक रहा।
+
+3. सबसे कम औसत न्यूनतम तापमान
+प्रदेश में ${month} ${year} के दौरान सबसे कम औसत न्यूनतम तापमान ${stats.lowestAvgMin.value}°C, ${stats.lowestAvgMin.station} में रिकॉर्ड किया गया।
+
+4. सबसे कम न्यूनतम तापमान (एकल दिन)
+${month} ${year} में न्यूनतम तापमान ${stats.lowestSingleMin.value}°C दर्ज किया गया, जो ${stats.lowestSingleMin.station} में मापा गया।
+
+5. पटना का अधिकतम तापमान
+राजधानी पटना में ${month} ${year} में अधिकतम तापमान ${stats.patna.max}°C दर्ज किया गया।
+
+6. पटना का न्यूनतम तापमान
+पटना में ${month} ${year} में न्यूनतम तापमान ${stats.patna.min}°C रिकॉर्ड किया गया।
+
+7. पटना का औसत तापमान
+${month} ${year} में पटना का औसत अधिकतम तापमान ${stats.patna.avgMax}°C और औसत न्यूनतम तापमान ${stats.patna.avgMin}°C रहा।
+
+8. मासिक वर्षा की स्थिति
+${month} ${year} में प्रदेश की कुल मासिक वर्षा ${stats.totalRainfall} mm रिकॉर्ड की गई।`;
+      }
+
+      function createChartsOptimized(rainData, maxData, minData, month, year) {
+        requestAnimationFrame(() => createRainfallChart(rainData, month, year));
+      }
+
+      function createRainfallChart(rainData, month, year) {
+        const canvas = document.getElementById("rainfallChart");
+        if (!canvas) return;
+        const rainCtx = canvas.getContext("2d");
+        const sortedStations = stats.stationRainfall
+          .sort((a, b) => parseFloat(b.rainfall) - parseFloat(a.rainfall))
+          .slice(0, 15);
+        if (charts.rainfall) charts.rainfall.destroy();
+        charts.rainfall = new Chart(rainCtx, {
+          type: "bar",
+          data: {
+            labels: sortedStations.map((s) => s.station),
+            datasets: [
+              {
+                label: "वर्षा (mm)",
+                data: sortedStations.map((s) => s.rainfall),
+                backgroundColor: "rgba(59, 130, 246, 0.7)",
+                borderColor: "rgba(59, 130, 246, 1)",
+                borderWidth: 2,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 500 },
+            plugins: {
+              legend: { display: false },
+              title: {
+                display: true,
+                text: `बिहार राज्य के विभिन्न जिलों का ${month} ${year} माह के संचयी वर्षा का चित्रण`,
+                font: { size: 14 },
+              },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                title: { display: true, text: "वर्षा (mm)" },
+              },
+            },
+          },
+        });
+      }
+
+      function downloadChart(chartId) {
+        const canvas = document.getElementById(chartId);
+        if (!canvas) return;
+        const link = document.createElement("a");
+        link.download = `${chartId}_${new Date().getTime()}.png`;
+        link.href = canvas.toDataURL();
+        link.click();
+      }
+
+      function previewImage(input, previewId) {
+        if (input.files && input.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const preview = document.getElementById(previewId);
+            if (preview) {
+              preview.src = e.target.result;
+              preview.style.display = "block";
+            }
+          };
+          reader.readAsDataURL(input.files[0]);
+        }
+      }
+
+      function exportToPDF() {
+        const { jsPDF } = window.jspdf;
+        if (!jsPDF) {
+          alert("PDF library not loaded");
+          return;
+        }
+        const doc = new jsPDF("p", "mm", "a4");
+        const { month, year } = getCurrentMonthYear();
+        doc.setFontSize(16);
+        doc.text("बिहार मौसम विज्ञान केंद्र", 105, 20, { align: "center" });
+        doc.setFontSize(12);
+        doc.text(`मासिक मौसम विश्लेषण रिपोर्ट - ${month} ${year}`, 105, 30, {
+          align: "center",
+        });
+        const reportText = document.getElementById("analysisReport");
+        if (reportText && reportText.value) {
+          doc.setFontSize(10);
+          const splitText = doc.splitTextToSize(reportText.value, 180);
+          doc.text(splitText, 15, 50);
+        }
+        const preparedBy = document.getElementById("preparedBy");
+        const issuedBy = document.getElementById("issuedBy");
+        if (preparedBy && preparedBy.value)
+          doc.text(`तैयार करने वाले: ${preparedBy.value}`, 15, 250);
+        if (issuedBy && issuedBy.value)
+          doc.text(`पूर्वानुमान जारी करने वाले: ${issuedBy.value}`, 15, 260);
+        doc.save(`Weather_Report_${month}_${year}_${new Date().getTime()}.pdf`);
+      }
+
+      // ══════════════════════════════════════════════════════════════
+      //  BULLETIN PREVIEW MODAL
+      // ══════════════════════════════════════════════════════════════
+
+      function openBulletinPreviewModal() {
+        const modal = document.getElementById("bulletinPreviewModal");
+        const area = document.getElementById("bulletinPrintArea");
+        area.innerHTML = buildBulletinHTML();
+        modal.style.display = "block";
+        document.body.style.overflow = "hidden";
+        // Render any charts inside bulletin after DOM settles
+        setTimeout(() => renderBulletinCharts(), 200);
+      }
+
+      function closeBulletinPreviewModal() {
+        document.getElementById("bulletinPreviewModal").style.display = "none";
+        document.body.style.overflow = "";
+      }
+
+      function printBulletinPreview() {
+        const content = document.getElementById("bulletinPrintArea").innerHTML;
+        const win = window.open("", "_blank");
+        win.document.write(`<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<title>Bihar Weather Bulletin</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Noto Sans Devanagari',sans-serif; background:#fff; color:#1a1a1a; padding:24px; }
+  @media print { body { padding:10px; } .no-print { display:none; } }
+  table { border-collapse:collapse; width:100%; margin-bottom:16px; font-size:0.82rem; }
+  th { background:#1e3a8a; color:#fff; padding:7px 10px; text-align:center; }
+  td { border:1px solid #ccc; padding:6px 8px; text-align:center; }
+  tr:nth-child(even) td { background:#f0f4ff; }
+  canvas { max-width:100%; }
+</style>
+</head>
+<body>${content}</body>
+</html>`);
+        win.document.close();
+        win.focus();
+        setTimeout(() => {
+          win.print();
+        }, 800);
+      }
+
+      async function downloadBulletinPDF(btnElement) {
+        const { jsPDF } = window.jspdf;
+        if (!jsPDF || !window.html2canvas) {
+          alert("PDF library not loaded properly.");
+          return;
+        }
+
+        const printArea = document.getElementById("bulletinPrintArea");
+        const originalText = btnElement.innerHTML;
+
+        try {
+          btnElement.innerHTML =
+            '<i class="fas fa-spinner fa-spin"></i> Generating...';
+          btnElement.disabled = true;
+
+          const canvas = await html2canvas(printArea, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: "#ffffff",
+          });
+
+          const imgData = canvas.toDataURL("image/png");
+          const pdf = new jsPDF("p", "mm", "a4");
+
+          const pdfWidth = pdf.internal.pageSize.getWidth();
+          const pdfHeight = pdf.internal.pageSize.getHeight();
+          const imgWidth = pdfWidth;
+          const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+
+          let heightLeft = imgHeight;
+          let position = 0;
+
+          pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+          heightLeft -= pdfHeight;
+
+          while (heightLeft > 0) {
+            position -= pdfHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+            heightLeft -= pdfHeight;
+          }
+
+          const { month, year } = getCurrentMonthYear();
+          pdf.save(`Weather_Bulletin_Preview_${month}_${year}.pdf`);
+        } catch (error) {
+          console.error("PDF generation error:", error);
+          alert("PDF जनरेट करने में त्रुटि हुई।");
+        } finally {
+          btnElement.innerHTML = originalText;
+          btnElement.disabled = false;
+        }
+      }
+
+      // यह फंक्शन असली पेज को छेड़े बिना Canvas (चार्ट्स) को इमेज में बदलता है
+      function getHtmlWithCanvasImages(elementId) {
+        const el = document.getElementById(elementId);
+        if (!el || !el.innerHTML.trim()) return "";
+
+        // DOM की सुरक्षित कॉपी बनाना
+        const clone = el.cloneNode(true);
+        const originalCanvases = el.querySelectorAll("canvas");
+        const clonedCanvases = clone.querySelectorAll("canvas");
+
+        // प्रत्येक कैनवस को इमेज में बदलना
+        originalCanvases.forEach((canvas, index) => {
+          try {
+            const imgData = canvas.toDataURL("image/png");
+            const img = document.createElement("img");
+            img.src = imgData;
+            img.style.maxWidth = "100%";
+            img.style.height = "auto";
+            img.style.display = "block";
+            img.style.margin = "0 auto";
+
+            clonedCanvases[index].parentNode.replaceChild(
+              img,
+              clonedCanvases[index],
+            );
+          } catch (e) {
+            console.warn("Canvas export failed", e);
+          }
+        });
+
+        // प्रिंट प्रीव्यू से फालतू डाउनलोड बटन छिपाना
+        clone.querySelectorAll(".chart-actions, button").forEach((btn) => {
+          btn.style.display = "none";
+        });
+
+        // मुख्य पेज को ख़राब होने से बचाने के लिए डुप्लीकेट IDs हटाना
+        clone.querySelectorAll("[id]").forEach((node) => {
+          node.removeAttribute("id");
+        });
+
+        return clone.innerHTML;
+      }
+
+      function buildBulletinHTML() {
+        const { month, year, monthIndex } = getCurrentMonthYear();
+
+        // Compute dates
+        const nextMonthDate = new Date(parseInt(year), monthIndex + 1, 1);
+        const dd = String(nextMonthDate.getDate()).padStart(2, "0");
+        const mm = String(nextMonthDate.getMonth() + 1).padStart(2, "0");
+        const yyyy = nextMonthDate.getFullYear();
+        const issueDateStr = `${dd}.${mm}.${yyyy}`;
+
+        // Next month name for forecast title
+        const nextMonthNames = [
+          "जनवरी",
+          "फरवरी",
+          "मार्च",
+          "अप्रैल",
+          "मई",
+          "जून",
+          "जुलाई",
+          "अगस्त",
+          "सितंबर",
+          "अक्टूबर",
+          "नवंबर",
+          "दिसंबर",
+        ];
+        const nextMonthName = nextMonthNames[(monthIndex + 1) % 12];
+        const nextMonthYear = monthIndex === 11 ? parseInt(year) + 1 : year;
+
+        let html = "";
+
+        // ── HEADER ──────────────────────────────────────────────────
+        html += `
+        <div style="text-align:center;margin-bottom:24px;border-bottom:3px solid #1e3a8a;padding-bottom:16px;">
+          <div style="font-size:1rem;color:#555;margin-bottom:4px;">दिनांक:- ${issueDateStr}</div>
+          <h1 style="font-size:1.5rem;font-weight:700;color:#1e3a8a;margin-bottom:6px;">बिहार राज्य का मौसम विश्लेषण: ${month} ${year} और ${nextMonthName} ${nextMonthYear} मासिक पूर्वानुमान</h1>
+          <p style="font-size:0.95rem;color:#374151;line-height:1.6;">
+            प्रदेश में प्रतिस्थापित मौसम विज्ञान केंद्र के विभिन्न वेधशालाओं के प्राप्त आंकड़ों के आधार पर ${month}-${year} महीने के मौसम का विश्लेषण एवं रिपोर्ट :-
+          </p>
+        </div>`;
+
+        // ── STATS CARDS ─────────────────────────────────────────────
+        const analysisGrid = document.getElementById("analysisGrid");
+        if (analysisGrid && analysisGrid.innerHTML.trim()) {
+          html += `<h2 style="font-size:1.15rem;color:#1e3a8a;margin-bottom:12px;border-left:4px solid #f59e0b;padding-left:10px;">📊 विश्लेषण सारांश</h2>`;
+          html += `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;">`;
+          const cards = analysisGrid.querySelectorAll(".stat-card");
+          cards.forEach((card) => {
+            const label = card.querySelector(".stat-label")?.textContent || "";
+            const value = card.querySelector(".stat-value")?.textContent || "";
+            const station =
+              card.querySelector(".stat-station")?.textContent || "";
+            html += `<div style="background:#f0f4ff;border-radius:10px;padding:12px;border-left:4px solid #3b82f6;">
+              <div style="font-size:0.8rem;color:#555;margin-bottom:4px;">${label}</div>
+              <div style="font-size:1.25rem;font-weight:700;color:#1e3a8a;">${value}</div>
+              <div style="font-size:0.82rem;color:#f59e0b;font-weight:600;">${station}</div>
+            </div>`;
+          });
+          html += `</div>`;
+        }
+
+        // ── FTO TABLE ───────────────────────────────────────────────
+        const ftoContent = getHtmlWithCanvasImages("ftoTables");
+        if (ftoContent) {
+          html += `<h2 style="font-size:1.15rem;color:#1e3a8a;margin-bottom:12px;margin-top:20px;border-left:4px solid #10b981;padding-left:10px;">📋 FTO (Five-year Temperature Outlook) तालिका</h2>`;
+          html += `<div style="overflow-x:auto;margin-bottom:8px;">${ftoContent}</div>`;
+        }
+
+        // ── PTO TABLE ───────────────────────────────────────────────
+        const ptoContent = getHtmlWithCanvasImages("ptoTables");
+        if (ptoContent) {
+          html += `<h2 style="font-size:1.15rem;color:#1e3a8a;margin-bottom:12px;margin-top:20px;border-left:4px solid #8b5cf6;padding-left:10px;">📋 PTO (Five-year Precipitation Outlook) तालिका</h2>`;
+          html += `<div style="overflow-x:auto;margin-bottom:8px;">${ptoContent}</div>`;
+        }
+
+        // ── RAINFALL CHART ──────────────────────────────────────────
+        const rainfallCanvas = document.getElementById("rainfallChart");
+        if (rainfallCanvas) {
+          try {
+            const imgData = rainfallCanvas.toDataURL("image/png");
+            html += `<h2 style="font-size:1.15rem;color:#1e3a8a;margin-bottom:12px;margin-top:20px;border-left:4px solid #3b82f6;padding-left:10px;">📈 वर्षा चार्ट (${month} ${year})</h2>`;
+            html += `<div style="text-align:center;margin-bottom:20px;"><img src="${imgData}" style="max-width:100%;border-radius:8px;border:1px solid #e2e8f0;"></div>`;
+          } catch (e) {}
+        }
+
+        // ── ANALYSIS REPORT TEXT ────────────────────────────────────
+        const reportText =
+          document.getElementById("analysisReport")?.value || "";
+        if (reportText.trim()) {
+          html += `<h2 style="font-size:1.15rem;color:#1e3a8a;margin-bottom:12px;margin-top:20px;border-left:4px solid #f59e0b;padding-left:10px;">📝 मौसम विश्लेषण रिपोर्ट</h2>`;
+          html += `<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:16px;margin-bottom:20px;line-height:1.8;white-space:pre-wrap;font-size:0.92rem;">${reportText}</div>`;
+        }
+
+        // ── OUTLOOK TEXT ────────────────────────────────────────────
+        const outlookRf = document.getElementById("rf_final")?.value || "";
+        const outlookMt = document.getElementById("mt_final")?.value || "";
+        const outlookMn = document.getElementById("mn_final")?.value || "";
+        const outlookWv = document.getElementById("wv_final")?.value || "";
+        if (outlookRf || outlookMt || outlookMn || outlookWv) {
+          html += `<h2 style="font-size:1.15rem;color:#1e3a8a;margin-bottom:12px;margin-top:20px;border-left:4px solid #10b981;padding-left:10px;">🔭 ${nextMonthName} ${nextMonthYear} मासिक पूर्वानुमान</h2>`;
+          html += `<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:16px;margin-bottom:20px;line-height:1.8;font-size:0.92rem;">`;
+          if (outlookRf)
+            html += `<p style="margin-bottom:10px;"><strong>🌧 वर्षा:</strong> ${outlookRf}</p>`;
+          if (outlookMt)
+            html += `<p style="margin-bottom:10px;"><strong>🌡 अधिकतम तापमान:</strong> ${outlookMt}</p>`;
+          if (outlookMn)
+            html += `<p style="margin-bottom:10px;"><strong>❄ न्यूनतम तापमान:</strong> ${outlookMn}</p>`;
+          if (outlookWv)
+            html += `<p><strong>🌊 ऊष्ण/शीत लहर:</strong> ${outlookWv}</p>`;
+          html += `</div>`;
+        }
+
+        // ── UPLOADED IMAGES ─────────────────────────────────────────
+        let imagesFound = false;
+        const imageIds = ["rainfallChartImgPreview"];
+        // Also check any other preview images in the page
+        document.querySelectorAll(".preview-image").forEach((img) => {
+          if (
+            img.style.display !== "none" &&
+            img.src &&
+            img.src !== window.location.href
+          ) {
+            if (!imagesFound) {
+              html += `<h2 style="font-size:1.15rem;color:#1e3a8a;margin-bottom:12px;margin-top:20px;border-left:4px solid #ec4899;padding-left:10px;">🖼 अपलोड की गई छवियाँ</h2>`;
+              imagesFound = true;
+            }
+            html += `<div style="text-align:center;margin-bottom:16px;"><img src="${img.src}" style="max-width:100%;border-radius:8px;border:1px solid #e2e8f0;"></div>`;
+          }
+        });
+
+        // ── SIGNATURE ───────────────────────────────────────────────
+        const preparedBy = document.getElementById("preparedBy")?.value || "";
+        const issuedBy = document.getElementById("issuedBy")?.value || "";
+        if (preparedBy || issuedBy) {
+          html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:30px;padding-top:20px;border-top:2px solid #e2e8f0;">`;
+          html += `<div><h4 style="color:#1e3a8a;margin-bottom:8px;">✍ तैयार करने वाले</h4><p style="font-size:0.95rem;">${preparedBy || "—"}</p></div>`;
+          html += `<div><h4 style="color:#1e3a8a;margin-bottom:8px;">✅ पूर्वानुमान जारी करने वाले</h4><p style="font-size:0.95rem;">${issuedBy || "—"}</p></div>`;
+          html += `</div>`;
+        }
+
+        return html;
+      }
+
+      function renderBulletinCharts() {
+        // Charts in the preview modal are screenshots (toDataURL), so no extra rendering needed.
+        // This function is a placeholder for future enhancements.
+      }
+
+      function exportToDOCX() {
+        const { month, year } = getCurrentMonthYear();
+        const reportText = document.getElementById("analysisReport");
+        const preparedBy = document.getElementById("preparedBy");
+        const issuedBy = document.getElementById("issuedBy");
+        let content = reportText ? reportText.value : "";
+        content += `\n\n----------------------------------------\n`;
+        if (preparedBy && preparedBy.value)
+          content += `तैयार करने वाले: ${preparedBy.value}\n`;
+        if (issuedBy && issuedBy.value)
+          content += `पूर्वानुमान जारी करने वाले: ${issuedBy.value}\n`;
+        content += `दिनांक: ${new Date().toLocaleDateString("hi-IN")}`;
+        const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `Weather_Report_${month}_${year}_${new Date().getTime()}.txt`;
+        link.click();
+      }
+    </script>
+  </body>
+</html>

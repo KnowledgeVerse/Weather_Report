@@ -1,0 +1,1102 @@
+/* ============================================
+   WEATHER BULLETIN SYSTEM - ANIMATIONS
+   ============================================ */
+
+/* ============================================
+   FLOATING CLOUDS
+   ============================================ */
+
+.clouds-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.cloud {
+    position: absolute;
+    opacity: 0.6;
+}
+
+.cloud img {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.1));
+}
+
+.cloud-1 {
+    width: 180px;
+    top: 10%;
+    left: -200px;
+    animation: floatCloud1 35s linear infinite;
+}
+
+.cloud-2 {
+    width: 120px;
+    top: 25%;
+    left: -150px;
+    animation: floatCloud2 45s linear infinite;
+    animation-delay: 5s;
+}
+
+.cloud-3 {
+    width: 220px;
+    top: 60%;
+    left: -250px;
+    animation: floatCloud3 50s linear infinite;
+    animation-delay: 10s;
+}
+
+.cloud-4 {
+    width: 150px;
+    top: 40%;
+    left: -180px;
+    animation: floatCloud4 40s linear infinite;
+    animation-delay: 15s;
+}
+
+.cloud-5 {
+    width: 100px;
+    top: 75%;
+    left: -120px;
+    animation: floatCloud5 55s linear infinite;
+    animation-delay: 20s;
+}
+
+@keyframes floatCloud1 {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(100vw + 200px)); }
+}
+
+@keyframes floatCloud2 {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(100vw + 150px)); }
+}
+
+@keyframes floatCloud3 {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(100vw + 250px)); }
+}
+
+@keyframes floatCloud4 {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(100vw + 180px)); }
+}
+
+@keyframes floatCloud5 {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(100vw + 120px)); }
+}
+
+/* ============================================
+   FLOATING WEATHER ICONS
+   ============================================ */
+
+.floating-icons {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.float-icon {
+    position: absolute;
+    opacity: 0.4;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+.float-icon img {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+.float-sun {
+    width: 60px;
+    top: 15%;
+    left: 10%;
+    animation: floatSun 8s ease-in-out infinite;
+}
+
+.float-cloud {
+    width: 50px;
+    top: 20%;
+    right: 15%;
+    animation: floatCloudIcon 10s ease-in-out infinite;
+}
+
+.float-rain {
+    width: 45px;
+    bottom: 25%;
+    left: 15%;
+    animation: floatRain 7s ease-in-out infinite;
+}
+
+.float-storm {
+    width: 55px;
+    top: 60%;
+    right: 10%;
+    animation: floatStorm 9s ease-in-out infinite;
+}
+
+.float-snow {
+    width: 40px;
+    bottom: 30%;
+    right: 20%;
+    animation: floatSnow 11s ease-in-out infinite;
+}
+
+.float-wind {
+    width: 50px;
+    top: 45%;
+    left: 5%;
+    animation: floatWind 6s ease-in-out infinite;
+}
+
+@keyframes floatSun {
+    0%, 100% { 
+        transform: translateY(0) rotate(0deg) scale(1); 
+    }
+    25% { 
+        transform: translateY(-20px) rotate(5deg) scale(1.05); 
+    }
+    50% { 
+        transform: translateY(-10px) rotate(0deg) scale(1); 
+    }
+    75% { 
+        transform: translateY(-25px) rotate(-5deg) scale(1.05); 
+    }
+}
+
+@keyframes floatCloudIcon {
+    0%, 100% { 
+        transform: translateY(0) translateX(0); 
+    }
+    33% { 
+        transform: translateY(-15px) translateX(10px); 
+    }
+    66% { 
+        transform: translateY(-5px) translateX(-5px); 
+    }
+}
+
+@keyframes floatRain {
+    0%, 100% { 
+        transform: translateY(0) rotate(0deg); 
+    }
+    50% { 
+        transform: translateY(-20px) rotate(5deg); 
+    }
+}
+
+@keyframes floatStorm {
+    0%, 100% { 
+        transform: translateY(0) scale(1); 
+    }
+    25% { 
+        transform: translateY(-15px) scale(1.1); 
+    }
+    50% { 
+        transform: translateY(-5px) scale(1); 
+    }
+    75% { 
+        transform: translateY(-20px) scale(1.05); 
+    }
+}
+
+@keyframes floatSnow {
+    0%, 100% { 
+        transform: translateY(0) rotate(0deg); 
+    }
+    50% { 
+        transform: translateY(-25px) rotate(180deg); 
+    }
+}
+
+@keyframes floatWind {
+    0%, 100% { 
+        transform: translateX(0) scaleX(1); 
+    }
+    50% { 
+        transform: translateX(20px) scaleX(1.1); 
+    }
+}
+
+/* ============================================
+   LIGHTNING ANIMATIONS
+   ============================================ */
+
+.lightning-active .lightning-flash {
+    animation: lightningFlash 0.2s ease-out;
+}
+
+@keyframes lightningFlash {
+    0% { opacity: 0; }
+    10% { opacity: 0.9; }
+    20% { opacity: 0; }
+    30% { opacity: 0.7; }
+    40% { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+/* ============================================
+   BUTTON RIPPLE EFFECT
+   ============================================ */
+
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(0);
+    animation: rippleEffect 0.6s ease-out;
+    pointer-events: none;
+}
+
+@keyframes rippleEffect {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* ============================================
+   CARD HOVER LIFT
+   ============================================ */
+
+.card-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================
+   HOVER GLOW EFFECT
+   ============================================ */
+
+.hover-glow {
+    transition: box-shadow 0.3s ease;
+}
+
+.hover-glow:hover {
+    box-shadow: 0 0 30px rgba(74, 144, 217, 0.4);
+}
+
+/* ============================================
+   SIDEBAR EXPAND ANIMATION
+   ============================================ */
+
+.sidebar {
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-link {
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-item.active .nav-link::after {
+    width: 100%;
+}
+
+/* ============================================
+   PAGE TRANSITION ANIMATIONS
+   ============================================ */
+
+.page-transition-enter {
+    animation: pageEnter 0.5s ease-out;
+}
+
+.page-transition-exit {
+    animation: pageExit 0.3s ease-in;
+}
+
+@keyframes pageEnter {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pageExit {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+/* ============================================
+   LOADING ANIMATIONS
+   ============================================ */
+
+.pulse-loader {
+    animation: pulseLoader 1.5s ease-in-out infinite;
+}
+
+@keyframes pulseLoader {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.7;
+    }
+}
+
+.bounce-loader {
+    animation: bounceLoader 1s ease-in-out infinite;
+}
+
+@keyframes bounceLoader {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+/* ============================================
+   SHIMMER EFFECT
+   ============================================ */
+
+.shimmer {
+    position: relative;
+    overflow: hidden;
+}
+
+.shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    animation: shimmerEffect 2s infinite;
+}
+
+@keyframes shimmerEffect {
+    100% {
+        left: 100%;
+    }
+}
+
+/* ============================================
+   ROTATE ANIMATIONS
+   ============================================ */
+
+.rotate-slow {
+    animation: rotateSlow 20s linear infinite;
+}
+
+.rotate-medium {
+    animation: rotateMedium 10s linear infinite;
+}
+
+.rotate-fast {
+    animation: rotateFast 3s linear infinite;
+}
+
+@keyframes rotateSlow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes rotateMedium {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes rotateFast {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   PULSE ANIMATIONS
+   ============================================ */
+
+.pulse-soft {
+    animation: pulseSoft 2s ease-in-out infinite;
+}
+
+.pulse-strong {
+    animation: pulseStrong 1.5s ease-in-out infinite;
+}
+
+@keyframes pulseSoft {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+}
+
+@keyframes pulseStrong {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+/* ============================================
+   SHAKE ANIMATION
+   ============================================ */
+
+.shake {
+    animation: shakeEffect 0.5s ease-in-out;
+}
+
+@keyframes shakeEffect {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+/* ============================================
+   BOUNCE ANIMATION
+   ============================================ */
+
+.bounce {
+    animation: bounceEffect 1s ease;
+}
+
+@keyframes bounceEffect {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-30px);
+    }
+    60% {
+        transform: translateY(-15px);
+    }
+}
+
+/* ============================================
+   FADE ANIMATIONS
+   ============================================ */
+
+.fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.fade-out {
+    animation: fadeOut 0.3s ease-in;
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.fade-in-down {
+    animation: fadeInDown 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   SLIDE ANIMATIONS
+   ============================================ */
+
+.slide-in-left {
+    animation: slideInLeft 0.5s ease-out;
+}
+
+.slide-in-right {
+    animation: slideInRight 0.5s ease-out;
+}
+
+.slide-in-up {
+    animation: slideInUp 0.5s ease-out;
+}
+
+.slide-in-down {
+    animation: slideInDown 0.5s ease-out;
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   SCALE ANIMATIONS
+   ============================================ */
+
+.scale-in {
+    animation: scaleIn 0.4s ease-out;
+}
+
+.scale-out {
+    animation: scaleOut 0.3s ease-in;
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes scaleOut {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+}
+
+/* ============================================
+   FLIP ANIMATIONS
+   ============================================ */
+
+.flip-in-x {
+    animation: flipInX 0.6s ease-out;
+}
+
+.flip-in-y {
+    animation: flipInY 0.6s ease-out;
+}
+
+@keyframes flipInX {
+    from {
+        transform: perspective(400px) rotateX(90deg);
+        opacity: 0;
+    }
+    to {
+        transform: perspective(400px) rotateX(0deg);
+        opacity: 1;
+    }
+}
+
+@keyframes flipInY {
+    from {
+        transform: perspective(400px) rotateY(90deg);
+        opacity: 0;
+    }
+    to {
+        transform: perspective(400px) rotateY(0deg);
+        opacity: 1;
+    }
+}
+
+/* ============================================
+   WEATHER PARTICLE ANIMATIONS
+   ============================================ */
+
+.rain-drop {
+    position: absolute;
+    width: 2px;
+    height: 15px;
+    background: linear-gradient(to bottom, transparent, rgba(174, 194, 224, 0.8));
+    border-radius: 2px;
+    animation: rainFall linear infinite;
+}
+
+@keyframes rainFall {
+    0% {
+        transform: translateY(-100vh);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh);
+        opacity: 0.3;
+    }
+}
+
+.snowflake {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: snowFall linear infinite;
+}
+
+@keyframes snowFall {
+    0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0.3;
+    }
+}
+
+.wind-particle {
+    position: absolute;
+    width: 100px;
+    height: 2px;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: windBlow linear infinite;
+}
+
+@keyframes windBlow {
+    0% {
+        transform: translateX(-100vw);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(100vw);
+        opacity: 0;
+    }
+}
+
+/* ============================================
+   SUN GLOW ANIMATION
+   ============================================ */
+
+.sun-glow {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.4) 0%, transparent 70%);
+    animation: sunGlow 4s ease-in-out infinite;
+}
+
+@keyframes sunGlow {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+}
+
+/* ============================================
+   PARALLAX BACKGROUND
+   ============================================ */
+
+.parallax-layer {
+    will-change: transform;
+    transition: transform 0.1s ease-out;
+}
+
+/* ============================================
+   STAGGER ANIMATIONS
+   ============================================ */
+
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+.stagger-6 { animation-delay: 0.6s; }
+
+/* ============================================
+   HOVER ANIMATIONS
+   ============================================ */
+
+.hover-scale {
+    transition: transform 0.3s ease;
+}
+
+.hover-scale:hover {
+    transform: scale(1.05);
+}
+
+.hover-rotate {
+    transition: transform 0.3s ease;
+}
+
+.hover-rotate:hover {
+    transform: rotate(5deg);
+}
+
+.hover-brightness {
+    transition: filter 0.3s ease;
+}
+
+.hover-brightness:hover {
+    filter: brightness(1.2);
+}
+
+/* ============================================
+   PROGRESS BAR ANIMATION
+   ============================================ */
+
+.progress-animate {
+    animation: progressFill 2s ease-out forwards;
+}
+
+@keyframes progressFill {
+    from { width: 0%; }
+    to { width: var(--progress-value, 100%); }
+}
+
+/* ============================================
+   TYPING ANIMATION
+   ============================================ */
+
+.typing {
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 2px solid var(--text-white);
+    animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent; }
+    50% { border-color: var(--text-white); }
+}
+
+/* ============================================
+   GRADIENT ANIMATION
+   ============================================ */
+
+.animated-gradient {
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ============================================
+   MORPHING ANIMATION
+   ============================================ */
+
+.morph {
+    animation: morphShape 8s ease-in-out infinite;
+}
+
+@keyframes morphShape {
+    0%, 100% {
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    }
+    50% {
+        border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+    }
+}
+
+/* ============================================
+   WAVE ANIMATION
+   ============================================ */
+
+.wave {
+    animation: waveMotion 3s ease-in-out infinite;
+}
+
+@keyframes waveMotion {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    25% {
+        transform: translateY(-10px) rotate(2deg);
+    }
+    50% {
+        transform: translateY(0) rotate(0deg);
+    }
+    75% {
+        transform: translateY(10px) rotate(-2deg);
+    }
+}
+
+/* ============================================
+   HEARTBEAT ANIMATION
+   ============================================ */
+
+.heartbeat {
+    animation: heartbeatEffect 1.5s ease-in-out infinite;
+}
+
+@keyframes heartbeatEffect {
+    0%, 100% {
+        transform: scale(1);
+    }
+    14% {
+        transform: scale(1.1);
+    }
+    28% {
+        transform: scale(1);
+    }
+    42% {
+        transform: scale(1.1);
+    }
+    70% {
+        transform: scale(1);
+    }
+}
+
+/* ============================================
+   TADA ANIMATION
+   ============================================ */
+
+.tada {
+    animation: tadaEffect 1s ease;
+}
+
+@keyframes tadaEffect {
+    0% {
+        transform: scale(1);
+    }
+    10%, 20% {
+        transform: scale(0.9) rotate(-3deg);
+    }
+    30%, 50%, 70%, 90% {
+        transform: scale(1.1) rotate(3deg);
+    }
+    40%, 60%, 80% {
+        transform: scale(1.1) rotate(-3deg);
+    }
+    100% {
+        transform: scale(1) rotate(0);
+    }
+}
+
+/* ============================================
+   RUBBER BAND ANIMATION
+   ============================================ */
+
+.rubber-band {
+    animation: rubberBandEffect 1s ease;
+}
+
+@keyframes rubberBandEffect {
+    0% {
+        transform: scale(1);
+    }
+    30% {
+        transform: scaleX(1.25) scaleY(0.75);
+    }
+    40% {
+        transform: scaleX(0.75) scaleY(1.25);
+    }
+    50% {
+        transform: scaleX(1.15) scaleY(0.85);
+    }
+    65% {
+        transform: scaleX(0.95) scaleY(1.05);
+    }
+    75% {
+        transform: scaleX(1.05) scaleY(0.95);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* ============================================
+   JELLO ANIMATION
+   ============================================ */
+
+.jello {
+    animation: jelloEffect 0.9s both;
+}
+
+@keyframes jelloEffect {
+    0%, 11.1%, 100% {
+        transform: translate3d(0, 0, 0);
+    }
+    22.2% {
+        transform: skewX(-12.5deg) skewY(-12.5deg);
+    }
+    33.3% {
+        transform: skewX(6.25deg) skewY(6.25deg);
+    }
+    44.4% {
+        transform: skewX(-3.125deg) skewY(-3.125deg);
+    }
+    55.5% {
+        transform: skewX(1.5625deg) skewY(1.5625deg);
+    }
+    66.6% {
+        transform: skewX(-0.78125deg) skewY(-0.78125deg);
+    }
+    77.7% {
+        transform: skewX(0.390625deg) skewY(0.390625deg);
+    }
+    88.8% {
+        transform: skewX(-0.1953125deg) skewY(-0.1953125deg);
+    }
+}
+
+/* ============================================
+   SWING ANIMATION
+   ============================================ */
+
+.swing {
+    animation: swingEffect 1s ease;
+    transform-origin: top center;
+}
+
+@keyframes swingEffect {
+    20% {
+        transform: rotate(15deg);
+    }
+    40% {
+        transform: rotate(-10deg);
+    }
+    60% {
+        transform: rotate(5deg);
+    }
+    80% {
+        transform: rotate(-5deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .cloud {
+        animation: none !important;
+    }
+    
+    .float-icon {
+        animation: none !important;
+    }
+    
+    .weather-canvas {
+        display: none !important;
+    }
+}

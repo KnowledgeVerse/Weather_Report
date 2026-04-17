@@ -1,0 +1,1006 @@
+/* ============================================
+   WEEKLY WEATHER BULLETIN GENERATOR STYLES
+   IMD (India Meteorological Department) Format
+   ============================================ */
+
+/* CSS Variables */
+:root {
+  --primary-color: #1e3a5f;
+  --secondary-color: #2c5282;
+  --accent-color: #3182ce;
+  --success-color: #38a169;
+  --warning-color: #d69e2e;
+  --danger-color: #e53e3e;
+  --bg-color: #f7fafc;
+  --card-bg: #ffffff;
+  --text-primary: #000000;
+  --text-secondary: #222222;
+  --border-color: #e2e8f0;
+  --shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* ============================================
+   HEADER STYLES
+   ============================================ */
+
+.main-header {
+  background: var(--card-bg);
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+  margin-bottom: 30px;
+  position: relative;
+  overflow: hidden;
+}
+
+.main-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #f6ad55, #ed8936, #dd6b20);
+}
+
+.main-header h1 {
+  color: var(--primary-color);
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.main-header p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+/* ============================================
+   SECTION STYLES
+   ============================================ */
+
+section {
+  background: var(--card-bg);
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  margin-bottom: 25px;
+}
+
+section h2 {
+  color: var(--primary-color);
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-hint {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+  font-style: italic;
+}
+
+/* ============================================
+   DATE SELECTION SECTION
+   ============================================ */
+
+.date-section {
+  background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
+  border-left: 5px solid var(--accent-color);
+}
+
+.date-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.date-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.date-input-group label {
+  font-weight: 600;
+  color: var(--primary-color);
+  font-size: 1rem;
+}
+
+.date-picker {
+  padding: 12px 16px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 16px;
+  width: 100%;
+  max-width: 300px;
+  transition: border-color 0.3s;
+}
+
+.date-picker:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.week-info {
+  background: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.week-info p {
+  margin: 5px 0;
+  color: var(--text-secondary);
+}
+
+.week-info .week-period {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.week-info .week-hindi {
+  font-family: "Mangal", "Kokila", "Arial Unicode MS", sans-serif;
+  color: var(--secondary-color);
+}
+
+/* ============================================
+   FILE UPLOAD SECTION
+   ============================================ */
+
+.file-upload-section {
+  background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
+  border-left: 5px solid var(--success-color);
+}
+
+.file-upload-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.file-upload-area {
+  border: 2px dashed var(--success-color);
+  border-radius: 12px;
+  padding: 40px;
+  text-align: center;
+  transition: all 0.3s;
+  cursor: pointer;
+  background: white;
+}
+
+.file-upload-area:hover {
+  border-color: #2f855a;
+  background: rgba(56, 161, 105, 0.05);
+}
+
+.file-list {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.file-list h4 {
+  color: var(--primary-color);
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+.file-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.file-list li {
+  padding: 8px 12px;
+  margin: 5px 0;
+  background: var(--bg-color);
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.file-list li .file-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-list li .file-type {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-left: 10px;
+}
+
+.file-type.pdf {
+  background: #fed7d7;
+  color: #c53030;
+}
+
+.file-type.word {
+  background: #bee3f8;
+  color: #2b6cb0;
+}
+
+.file-controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ============================================
+   INPUT SECTION
+   ============================================ */
+
+.input-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+#bulletinInput {
+  width: 100%;
+  min-height: 300px;
+  padding: 15px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 14px;
+  resize: vertical;
+  transition: border-color 0.3s;
+}
+
+#bulletinInput:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+/* ============================================
+   BUTTON STYLES
+   ============================================ */
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.btn-primary {
+  background: var(--accent-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #2b6cb0;
+}
+
+.btn-secondary {
+  background: #718096;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #4a5568;
+}
+
+.btn-success {
+  background: var(--success-color);
+  color: white;
+}
+
+.btn-success:hover {
+  background: #2f855a;
+}
+
+.btn-info {
+  background: #4299e1;
+  color: white;
+}
+
+.btn-info:hover {
+  background: #3182ce;
+}
+
+.btn-large {
+  padding: 15px 30px;
+  font-size: 16px;
+}
+
+/* ============================================
+   CONFIGURATION SECTION
+   ============================================ */
+
+.distribution-config {
+  display: grid;
+  gap: 15px;
+}
+
+.config-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px;
+  background: var(--bg-color);
+  border-radius: 8px;
+  border-left: 4px solid var(--accent-color);
+}
+
+.color-picker {
+  width: 50px;
+  height: 35px;
+  border: 2px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.config-label {
+  flex: 1;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.config-text {
+  width: 100px;
+  padding: 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* ============================================
+   SPATIAL EDITOR SECTION
+   ============================================ */
+
+.spatial-editor-section {
+  background: linear-gradient(135deg, #fffaf0 0%, #feebc8 100%);
+  border-left: 5px solid var(--warning-color);
+}
+
+.spatial-table-container {
+  overflow-x: auto;
+  margin-bottom: 20px;
+}
+
+/* Multi-select cell styles */
+.editable-cell {
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 600;
+  text-transform: uppercase;
+  border: 2px solid transparent;
+  user-select: none;
+}
+
+.editable-cell:hover {
+  filter: brightness(0.9);
+  transform: scale(1.02);
+}
+
+.editable-cell.selected-cell {
+  border: 3px solid #e53e3e !important;
+  box-shadow: 0 0 10px rgba(229, 62, 62, 0.5);
+  transform: scale(1.05);
+  z-index: 10;
+  position: relative;
+}
+
+.editable-cell select {
+  width: 100%;
+  padding: 5px;
+  border: none;
+  background: transparent;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+}
+
+.date-cell {
+  font-weight: bold;
+  background: #f7fafc;
+}
+
+/* Bulk edit panel */
+#bulkEditPanel {
+  margin-bottom: 15px;
+}
+
+/* ============================================
+   UPLOAD SECTION
+   ============================================ */
+
+.upload-area {
+  border: 2px dashed var(--border-color);
+  border-radius: 12px;
+  padding: 40px;
+  text-align: center;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.upload-area:hover {
+  border-color: var(--accent-color);
+  background: rgba(66, 153, 225, 0.05);
+}
+
+.upload-placeholder {
+  color: var(--text-secondary);
+}
+
+.upload-icon {
+  font-size: 48px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.upload-hint {
+  font-size: 12px;
+  color: #a0aec0;
+  margin-top: 5px;
+}
+
+.uploaded-image {
+  max-width: 100%;
+  max-height: 400px;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+/* ============================================
+   PREVIEW SECTION
+   ============================================ */
+
+.preview-controls {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+}
+
+.bulletin-preview {
+  background: #edf2f7; /* Light grey background to make A4 pages stand out */
+  border: 1px solid #ddd;
+  color: #000000;
+  padding: 30px 15px;
+  border-radius: 8px;
+  overflow-x: auto; /* Allows scrolling for A4 width on smaller screens */
+}
+
+.bulletin-page {
+  width: 210mm; /* Fixed A4 Width */
+  min-height: 297mm;
+  margin: 0 auto 40px auto; /* Centered with a clear visual gap/page break */
+  padding: 20mm;
+  background: white; /* Paper color */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* Paper shadow effect */
+  page-break-after: always;
+  box-sizing: border-box;
+}
+
+.bulletin-page:last-child {
+  page-break-after: auto;
+  margin-bottom: 0;
+}
+
+/* ============================================
+   BULLETIN HEADER (IMD Style)
+   ============================================ */
+
+.bulletin-preview .header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 3px double var(--primary-color);
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+}
+
+.logo-left,
+.logo-right {
+  height: 115px;
+  width: auto;
+}
+
+.bulletin-preview .title {
+  text-align: center;
+  flex: 1;
+  padding: 0 20px;
+}
+
+.bulletin-preview .title h2 {
+  color: var(--primary-color);
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  border: none;
+  justify-content: center;
+}
+
+.bulletin-preview .title h3 {
+  color: var(--secondary-color);
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.issue-date {
+  color: #000000;
+  font-size: 14px;
+  margin-top: 5px;
+  font-weight: 600;
+}
+
+.date-range {
+  color: #000000;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+/* ============================================
+   CONTENT SECTIONS
+   ============================================ */
+
+.content-section {
+  margin-bottom: 30px;
+}
+
+.content-section h4 {
+  color: #000000;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  padding: 8px 12px;
+  background: var(--bg-color);
+  border-left: 4px solid var(--accent-color);
+}
+
+/* ============================================
+   TABLE STYLES
+   ============================================ */
+
+.table-container {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-bottom: 20px;
+  page-break-inside: auto;
+}
+
+.data-table tr {
+  page-break-inside: avoid;
+  page-break-after: auto;
+}
+
+.data-table th {
+  background: var(--primary-color);
+  color: white;
+  padding: 12px 8px;
+  text-align: left;
+  font-weight: 600;
+  border: 1px solid #2c5282;
+}
+
+.data-table td {
+  padding: 10px 8px;
+  border: 1px solid var(--border-color);
+}
+
+.data-table tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+.data-table tbody tr:hover {
+  background: #e6fffa;
+}
+
+/* Spatial Distribution Table */
+.spatial-table th,
+.spatial-table td {
+  text-align: center;
+  font-size: 12px;
+}
+
+.spatial-cell {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* ============================================
+   LEGEND STYLES
+   ============================================ */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 15px;
+  padding: 15px;
+  background: var(--bg-color);
+  border-radius: 8px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.legend-color {
+  width: 30px;
+  height: 20px;
+  border: 1px solid #999;
+  border-radius: 3px;
+}
+
+/* ============================================
+   WEATHER SYSTEM SUMMARY
+   ============================================ */
+
+.weather-day {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f7fafc;
+  border-radius: 8px;
+  border-left: 4px solid var(--accent-color);
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.weather-day h5 {
+  color: var(--primary-color);
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.weather-day ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.weather-day li {
+  padding: 5px 0;
+  padding-left: 20px;
+  position: relative;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.weather-day li::before {
+  content: "➢";
+  position: absolute;
+  left: 0;
+  color: var(--accent-color);
+}
+
+/* ============================================
+   TEMPERATURE ANALYSIS
+   ============================================ */
+
+.analysis-text {
+  padding: 20px;
+  background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+  border-radius: 8px;
+  border: 1px solid #feb2b2;
+}
+
+.hindi-text {
+  font-family: "Mangal", "Kokila", "Arial Unicode MS", sans-serif;
+  font-size: 14px;
+  color: #000000;
+  margin-bottom: 8px;
+  line-height: 1.8;
+}
+
+.english-text {
+  font-size: 13px;
+  color: #000000;
+  font-style: italic;
+  margin-bottom: 15px;
+}
+
+/* ============================================
+   EDITABLE PREVIEW STYLES
+   ============================================ */
+
+[contenteditable="true"] {
+  outline: none;
+  transition: background-color 0.2s ease;
+}
+[contenteditable="true"]:hover {
+  background-color: rgba(251, 191, 36, 0.2);
+  cursor: text;
+}
+[contenteditable="true"]:focus {
+  background-color: #fff;
+  box-shadow: 0 0 0 2px var(--accent-color) inset;
+  border-radius: 4px;
+}
+
+/* ============================================
+   MAP SECTION
+   ============================================ */
+
+.map-section {
+  text-align: center;
+}
+
+.map-container {
+  margin: 20px 0;
+  padding: 20px;
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+
+.preview-map-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.footer-info {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* ============================================
+   LOADING OVERLAY
+   ============================================ */
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid var(--accent-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-overlay p {
+  color: white;
+  margin-top: 15px;
+  font-size: 16px;
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+.placeholder-text {
+  color: #a0aec0;
+  font-style: italic;
+  text-align: center;
+  padding: 20px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+
+@media print {
+  body {
+    background: white;
+  }
+
+  .container {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .main-header,
+  .date-section,
+  .file-upload-section,
+  .input-section,
+  .config-section,
+  .spatial-editor-section,
+  .upload-section,
+  .preview-controls {
+    display: none;
+  }
+
+  .bulletin-preview {
+    border: none;
+    background: white;
+    padding: 0;
+  }
+
+  .bulletin-page {
+    page-break-after: always;
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+    width: 100%;
+    min-height: auto;
+  }
+}
+
+/* ============================================
+   RESPONSIVE STYLES
+   ============================================ */
+
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+
+  .main-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .input-controls,
+  .file-controls {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .config-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .bulletin-preview .header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .logo-left,
+  .logo-right {
+    height: 60px;
+    margin: 10px 0;
+  }
+
+  .data-table {
+    font-size: 11px;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 6px 4px;
+  }
+}
+
+/* ============================================
+   DARK MODE STYLES
+   ============================================ */
+body.dark-mode {
+  --bg-color: #1a202c;
+  --card-bg: #2d3748;
+  --text-primary: #f7fafc;
+  --text-secondary: #e2e8f0;
+  --border-color: #4a5568;
+  background: #1a202c;
+}
+
+body.dark-mode section,
+body.dark-mode .main-header {
+  background: var(--card-bg);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode .week-info .week-period,
+body.dark-mode .file-list h4,
+body.dark-mode .date-input-group label,
+body.dark-mode .weather-day h5 {
+  color: #90cdf4;
+}
+
+body.dark-mode .week-info,
+body.dark-mode .file-list,
+body.dark-mode .file-upload-area {
+  background: #2d3748;
+  border-color: #4a5568;
+}
+
+body.dark-mode #bulletinInput {
+  background: #1a202c;
+  color: #f7fafc;
+  border-color: #4a5568;
+}
+
+/* Keep preview container styling appropriate for generated content */
+body.dark-mode .bulletin-preview {
+  background: #1a202c;
+  border-color: #4a5568;
+}
+
+body.dark-mode .bulletin-page {
+  /* We keep the paper white so the final PDF/Doc generation looks correct */
+  background: #ffffff;
+  color: #000000;
+}

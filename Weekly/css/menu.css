@@ -1,0 +1,572 @@
+:root {
+  --sidebar-width: 260px;
+  --sidebar-collapsed-width: 65px;
+}
+
+body {
+  padding-left: var(--sidebar-width);
+  transition: padding-left 0.3s ease;
+}
+
+body.sidebar-collapsed {
+  padding-left: var(--sidebar-collapsed-width);
+}
+
+.main-menu {
+  background-color: #2c3e50;
+  width: var(--sidebar-width);
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.2);
+  font-family: "Roboto", Arial, sans-serif;
+  overflow-x: hidden;
+  overflow-y: auto;
+  transition: width 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-menu::-webkit-scrollbar {
+  width: 5px;
+}
+.main-menu::-webkit-scrollbar-thumb {
+  background-color: #3b4f63;
+  border-radius: 5px;
+}
+
+body.sidebar-collapsed .main-menu {
+  width: var(--sidebar-collapsed-width);
+}
+
+.sidebar-header {
+  padding: 15px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  background: #1a252f;
+  border-bottom: 1px solid #111820;
+}
+
+body.sidebar-collapsed .sidebar-header {
+  justify-content: center;
+  padding: 15px 0;
+}
+
+.toggle-btn-sidebar {
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 5px;
+  transition: color 0.3s;
+}
+.toggle-btn-sidebar:hover {
+  color: #3498db;
+}
+
+/* --- Animated Hamburger Toggle (From Uiverse.io by JkHuger) --- */
+.label-check {
+  display: none;
+}
+
+.hamburger-label {
+  width: 30px;
+  height: 22px;
+  display: block;
+  cursor: pointer;
+  position: relative;
+  pointer-events: none; /* Let parent #sidebarToggle handle clicks */
+}
+
+.hamburger-label div {
+  width: 30px;
+  height: 3px;
+  background-color: #fff;
+  position: absolute;
+  border-radius: 2px;
+  left: 0;
+}
+
+.line1 {
+  transition: all 0.3s;
+}
+.line2 {
+  margin: 9px 0 0 0;
+  transition: 0.3s;
+}
+.line3 {
+  margin: 18px 0 0 0;
+  transition: 0.3s;
+}
+
+/* Synced with sidebar-collapsed state for perfect integration */
+body.sidebar-collapsed .line1 {
+  transform: rotate(35deg) scaleX(0.55) translate(17px, -3px);
+  border-radius: 50px 50px 50px 0;
+}
+
+body.sidebar-collapsed .line3 {
+  transform: rotate(-35deg) scaleX(0.55) translate(17px, 3px);
+  border-radius: 0 50px 50px 50px;
+}
+
+body.sidebar-collapsed .line2 {
+  border-top-right-radius: 50px;
+  border-bottom-right-radius: 50px;
+  width: 19px;
+}
+
+.menu-root {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-item {
+  position: relative;
+  border-bottom: 1px solid #3b4f63;
+}
+
+.menu-actions-item {
+  padding: 16px 18px;
+}
+
+/* Bottom Menu Actions (Icons Only) */
+.menu-actions {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 20px 10px;
+}
+
+.action-icon-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #35516d, #233240);
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.1rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.menu-action-btn:hover {
+  background: linear-gradient(145deg, #0a67c2, #084b8a);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+}
+
+.menu-action-btn:focus-visible {
+  outline: 2px solid #7fc4ff;
+  outline-offset: 2px;
+}
+
+.menu-item a,
+.dropdown-title {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  white-space: nowrap;
+}
+
+body.sidebar-collapsed .menu-item a,
+body.sidebar-collapsed .dropdown-title {
+  padding: 15px 0;
+  justify-content: center;
+}
+
+body.sidebar-collapsed .menu-actions {
+  flex-direction: column;
+  gap: 25px;
+}
+
+body.sidebar-collapsed .menu-action-btn {
+  min-height: 42px;
+}
+
+.menu-item:hover > a,
+.dropdown-title:hover {
+  background-color: #0056b3;
+}
+
+.menu-icon {
+  width: 24px;
+  text-align: center;
+  font-size: 1.2em;
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+body.sidebar-collapsed .menu-icon {
+  margin-right: 0;
+}
+
+.menu-text {
+  flex-grow: 1;
+  transition: opacity 0.3s;
+}
+
+body.sidebar-collapsed .menu-text {
+  display: none;
+}
+
+.submenu-indicator {
+  font-size: 0.8em;
+  transition: transform 0.3s;
+}
+
+body.sidebar-collapsed .submenu-indicator {
+  display: none;
+}
+
+.menu-item.dropdown.open > .dropdown-title .submenu-indicator {
+  transform: rotate(180deg);
+}
+
+/* Submenu accordion (downwards) */
+.submenu {
+  display: none;
+  background-color: #1a252f;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-item.dropdown.open > .submenu {
+  display: block;
+}
+
+.submenu li {
+  border-bottom: 1px solid #2c3e50;
+}
+
+.submenu li a {
+  padding: 12px 20px 12px 45px;
+  font-size: 0.9em;
+  font-weight: normal;
+}
+
+.submenu li a:hover {
+  background-color: #34495e;
+  color: #3498db;
+}
+
+body.sidebar-collapsed .submenu li a {
+  padding: 12px 0;
+  justify-content: center;
+}
+
+.submenu li a .menu-icon {
+  font-size: 1em; /* Smaller icons for submenu items globally */
+}
+
+@keyframes fadeInSubmenu {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* When collapsed, pop out submenu on hover instead of click */
+body.sidebar-collapsed .menu-item.dropdown > .submenu {
+  display: none !important; /* Force hide unless hovered */
+}
+
+body.sidebar-collapsed .menu-item.dropdown:hover > .submenu {
+  position: absolute;
+  top: 0;
+  left: var(--sidebar-collapsed-width);
+  width: 220px;
+  background-color: #1a252f;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
+  display: block !important;
+  border-radius: 0 5px 5px 0;
+  border: 1px solid #3b4f63;
+  border-left: none;
+  z-index: 10000;
+  animation: fadeInSubmenu 0.3s ease-out forwards;
+}
+
+body.sidebar-collapsed .menu-item.dropdown:hover > .submenu li a {
+  padding: 10px 15px;
+  justify-content: flex-start;
+}
+
+body.sidebar-collapsed .menu-item.dropdown:hover > .submenu .menu-text {
+  display: inline-block;
+  font-size: 0.9em;
+}
+
+body.sidebar-collapsed .menu-item.dropdown:hover > .submenu .menu-icon {
+  margin-right: 10px;
+  font-size: 0.9em;
+}
+
+/* Style for the active parent menu item (top-level) */
+.menu-item.active-parent > .dropdown-title,
+.menu-item.active-parent > a {
+  background-color: #004a99;
+  border-left: 4px solid #3498db;
+  padding-left: 16px;
+}
+
+body.sidebar-collapsed .menu-item.active-parent > .dropdown-title,
+body.sidebar-collapsed .menu-item.active-parent > a {
+  padding-left: 0;
+  border-left: 4px solid #3498db;
+}
+
+/* Style for the active submenu item */
+.submenu li.active > a {
+  background-color: #0056b3;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+/* --- Language Switcher (From Uiverse.io by victoryamaykin) --- */
+.lang-switch {
+  position: relative;
+  display: inline-block;
+  width: 70px;
+  height: 34px;
+}
+
+.lang-switch input {
+  display: none;
+}
+
+.lang-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #3c3c3c;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.lang-slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.lang-switch input:checked + .lang-slider {
+  background-color: #0e6eb8;
+}
+
+.lang-switch input:focus + .lang-slider {
+  box-shadow: 0 0 1px #2196f3;
+}
+
+.lang-switch input:checked + .lang-slider:before {
+  -webkit-transform: translateX(36px);
+  -ms-transform: translateX(36px);
+  transform: translateX(36px); /* Fixed from 85px to stay inside container */
+}
+
+.lang-slider:after {
+  content: "EN";
+  color: white;
+  display: block;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50px;
+  font-size: 12px;
+  font-weight: bold;
+  font-family: Verdana, sans-serif;
+  z-index: 1;
+  transition: left 0.4s ease-in-out;
+}
+
+.lang-switch input:checked + .lang-slider:after {
+  content: "HI";
+  left: 20px;
+}
+
+/* --- Dark Mode Theme Switch (Celestial Animation) --- */
+.theme-switch {
+  --toggle-size: 10px; /* Base size, adjust to scale the toggle */
+  --container-width: 4.5em;
+  --container-height: 2em;
+  --container-radius: 6.25em;
+  --container-light-bg: #3d7eae;
+  --container-night-bg: #1d1f2c;
+  --circle-container-diameter: 2.5em;
+  --sun-moon-diameter: 1.5em;
+  --sun-bg: #ecca2f;
+  --moon-bg: #c4c9d1;
+  --spot-color: #959db1;
+  --circle-container-offset: calc(
+    (var(--container-height) - var(--circle-container-diameter)) / 2
+  );
+  --stars-color: #fff;
+  --transition: 0.5s cubic-bezier(0, -0.02, 0.4, 1.25);
+  --circle-transition: 0.3s cubic-bezier(0, -0.02, 0.35, 1.17);
+  position: relative;
+  display: inline-block;
+}
+
+.theme-switch,
+.theme-switch *,
+.theme-switch *::before,
+.theme-switch *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-size: var(--toggle-size);
+}
+
+.theme-switch__container {
+  width: var(--container-width);
+  height: var(--container-height);
+  background-color: var(--container-light-bg);
+  border-radius: var(--container-radius);
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow:
+    0em -0.062em 0.062em rgba(0, 0, 0, 0.25) inset,
+    0em 0.062em 0.125em rgba(255, 255, 255, 0.94) inset;
+  transition: var(--transition);
+  position: relative;
+}
+
+.theme-switch__checkbox {
+  display: none;
+}
+
+.theme-switch__circle-container {
+  width: var(--circle-container-diameter);
+  height: var(--circle-container-diameter);
+  background-color: rgba(255, 255, 255, 0.1);
+  position: absolute;
+  left: var(--circle-container-offset);
+  top: var(--circle-container-offset);
+  border-radius: var(--container-radius);
+  box-shadow:
+    inset 0 0 0 3.375em rgba(255, 255, 255, 0.1),
+    inset 0 0 0 3.375em rgba(255, 255, 255, 0.1),
+    0 0 0 0.625em rgba(255, 255, 255, 0.1),
+    0 0 0 1.25em rgba(255, 255, 255, 0.1);
+  display: flex;
+  transition: var(--circle-transition);
+  pointer-events: none;
+}
+
+.theme-switch__sun-moon-container {
+  pointer-events: auto;
+  position: relative;
+  z-index: 2;
+  width: var(--sun-moon-diameter);
+  height: var(--sun-moon-diameter);
+  margin: auto;
+  border-radius: var(--container-radius);
+  background-color: var(--sun-bg);
+  box-shadow:
+    0.062em 0.062em 0.062em 0em rgba(254, 255, 239, 0.61) inset,
+    0em -0.062em 0.062em 0em #a1872a inset;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.theme-switch__moon {
+  transform: translateX(100%);
+  width: 100%;
+  height: 100%;
+  background-color: var(--moon-bg);
+  border-radius: inherit;
+  box-shadow:
+    0.062em 0.062em 0.062em 0em rgba(254, 255, 239, 0.61) inset,
+    0em -0.062em 0.062em 0em #969696 inset;
+  transition: var(--transition);
+  position: relative;
+}
+
+.theme-switch__spot {
+  position: absolute;
+  top: 0.75em;
+  left: 0.312em;
+  width: 0.375em;
+  height: 0.375em;
+  border-radius: var(--container-radius);
+  background-color: var(--spot-color);
+  box-shadow: 0em 0.031em 0.062em rgba(0, 0, 0, 0.25) inset;
+}
+
+.theme-switch__stars-container {
+  position: absolute;
+  color: var(--stars-color);
+  top: -100%;
+  left: 0.312em;
+  width: 2.75em;
+  height: auto;
+  transition: var(--transition);
+}
+
+/* Checkbox checked state (Dark Mode Active) */
+.theme-switch__checkbox:checked + .theme-switch__container {
+  background-color: var(--container-night-bg);
+}
+
+.theme-switch__checkbox:checked
+  + .theme-switch__container
+  .theme-switch__circle-container {
+  left: calc(
+    100% - var(--circle-container-offset) - var(--circle-container-diameter)
+  );
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.theme-switch__checkbox:checked
+  + .theme-switch__container
+  .theme-switch__sun-moon-container {
+  background-color: var(--moon-bg);
+}
+
+.theme-switch__checkbox:checked + .theme-switch__container .theme-switch__moon {
+  transform: translate(0);
+}
+
+.theme-switch__checkbox:checked
+  + .theme-switch__container
+  .theme-switch__stars-container {
+  top: 30%;
+  transform: translateY(-50%);
+}
